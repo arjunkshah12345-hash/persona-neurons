@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One neuron, one personality: steering Qwen3.5-4B with single MLP neurons</title>
+<meta name="description" content="We searched all 294,912 MLP neurons in Qwen3.5-4B for single neurons that make the model talk like a poet, a mourner, Shakespeare or a hype man. Interactive results and a writeup.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7f5ef; --ink:#1c1b18; --soft:#5f5b52; --faint:#8d887c; --rule:#dedad0; --card:#fffdf8;
+  --accent:#b4441f; --accent-soft:#f4e3d8; --blue:#2f5d8a; --serif:"Newsreader",Georgia,serif;
+  --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--paper);color:var(--ink)}
+body{margin:0;font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+.prose{max-width:680px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-size:13px;color:var(--soft)}
+header.top b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+header.top nav a{color:var(--soft);text-decoration:none;margin-left:20px}
+header.top nav a:hover{color:var(--ink)}
+
+.hero{padding:56px 0 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,5.6vw,66px);line-height:1.02;letter-spacing:-.02em;margin:14px 0 20px}
+h1 em{color:var(--accent)}
+.lede{font-size:18px;color:var(--soft);max-width:520px}
+.demo{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;box-shadow:0 1px 0 rgba(0,0,0,.03),0 18px 40px -24px rgba(60,40,20,.25)}
+.demo .q{font-size:13px;color:var(--soft);margin-bottom:12px}
+.demo .row{display:grid;grid-template-columns:86px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--rule)}
+.demo .tag{font-family:var(--mono);font-size:11px;color:var(--faint);padding-top:3px}
+.demo .tag.on{color:var(--accent)}
+.demo .txt{font-family:var(--serif);font-size:16.5px;line-height:1.45}
+
+h2{font-family:var(--serif);font-weight:400;font-size:34px;letter-spacing:-.01em;line-height:1.15;margin:0 0 16px}
+h3{font-family:var(--sans);font-size:15px;font-weight:600;margin:32px 0 6px}
+section{padding:64px 0;border-top:1px solid var(--rule)}
+.prose p{margin:0 0 16px}
+.prose p, .prose li{font-family:var(--serif);font-size:19px;line-height:1.6}
+.prose li{margin-bottom:6px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+.prose code{background:#ece8dd;padding:1px 5px;border-radius:4px}
+.formula{font-family:var(--mono);font-size:14px;background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 18px;margin:8px 0 20px;overflow-x:auto}
+.note{font-size:14px;color:var(--soft)}
+
+/* explorer */
+.explorer{display:grid;grid-template-columns:250px 1fr;gap:28px;margin-top:28px}
+.list{display:flex;flex-direction:column;gap:2px;position:sticky;top:16px;align-self:start}
+.list button{all:unset;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;padding:9px 12px;border-radius:9px;font-size:14px}
+.list button:hover{background:#efebe1}
+.list button.sel{background:var(--ink);color:var(--paper)}
+.list button .id{font-family:var(--mono);font-size:10.5px;opacity:.6}
+.list button .bar{grid-column:1/-1;height:3px;border-radius:2px;background:var(--rule);overflow:hidden;margin-top:2px}
+.list button .bar i{display:block;height:100%;background:var(--accent)}
+.list button.sel .bar{background:#444}
+.panel-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:6px}
+.panel-head h3{font-family:var(--serif);font-weight:400;font-size:30px;margin:0;line-height:1.1}
+.panel-head .nid{font-family:var(--mono);font-size:13px;color:var(--soft)}
+.panel .desc{color:var(--soft);margin:6px 0 18px;font-size:15px}
+.controls{display:flex;flex-wrap:wrap;gap:22px;align-items:center;margin-bottom:18px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:9px;overflow:hidden;background:var(--card)}
+.seg button{all:unset;cursor:pointer;padding:6px 12px;font-family:var(--mono);font-size:12.5px;border-right:1px solid var(--rule)}
+.seg button:last-child{border-right:0}
+.seg button.sel{background:var(--accent);color:#fff}
+.lbl{font-size:12px;color:var(--faint);margin-right:8px;text-transform:uppercase;letter-spacing:.05em}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.1}
+.stat span{font-size:11.5px;color:var(--faint)}
+.samples{display:flex;flex-direction:column;gap:12px}
+.smp{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:14px 18px}
+.smp .q{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--soft);margin-bottom:8px}
+.smp .q .sc{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap}
+.smp .o{font-family:var(--serif);font-size:16.5px;line-height:1.5;white-space:pre-wrap}
+.smp .b{font-size:13.5px;color:var(--soft);border-top:1px dashed var(--rule);margin-top:10px;padding-top:8px;white-space:pre-wrap}
+.smp .b::before{content:"Unsteered: ";font-family:var(--mono);font-size:11px;color:var(--faint)}
+.toggle{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--soft);cursor:pointer;user-select:none}
+
+/* charts */
+.chart{margin:24px 0 8px}
+.crow{display:grid;grid-template-columns:110px 1fr 46px;gap:12px;align-items:center;padding:5px 0;font-size:14px}
+.crow .track{position:relative;height:18px}
+.crow .v1,.crow .v2{position:absolute;left:0;height:8px;border-radius:2px}
+.crow .v1{top:0;background:#cfc8b8}
+.crow .v2{top:10px;background:var(--accent)}
+.crow .num{font-family:var(--mono);font-size:12px;color:var(--soft);text-align:right}
+.legend{display:flex;gap:18px;font-size:12.5px;color:var(--soft);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:22px}
+.kcard{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 14px 8px}
+.kcard .t{font-size:13px;font-weight:600;text-transform:capitalize;display:flex;justify-content:space-between}
+.kcard .t span{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--faint)}
+.kcard svg{display:block;width:100%;height:84px}
+
+.find{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:24px}
+.fc{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.fc .h{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+.fc .h b{font-weight:600}
+.fc .h span{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.fc .o{font-family:var(--serif);font-size:15.5px;line-height:1.45}
+.fc .q{font-size:12px;color:var(--soft);margin-bottom:6px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 24px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule)}
+th{font-weight:600;font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+td.m{font-family:var(--mono);font-size:12.5px}
+footer{padding:48px 0 80px;color:var(--faint);font-size:13px;border-top:1px solid var(--rule)}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:32px;padding-top:28px}
+  .explorer{grid-template-columns:1fr}
+  .list{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px}
+  .list button{white-space:nowrap}
+  .list button .bar,.list button .id{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  header.top nav{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><b>persona-neurons</b>
+  <nav><a href="#explore">Explorer</a><a href="#how">How it works</a><a href="#sets">Small sets</a><a href="#limits">Limits</a><a href="https://github.com/arjunkshah12345-hash/persona-neurons">GitHub</a></nav>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="kicker">Qwen3.5-4B · 294,912 MLP neurons</div>
+    <h1>One neuron, <em>one personality.</em></h1>
+    <p class="lede">We searched every MLP neuron in a 4B-parameter language model for single neurons that change how it talks. Turn up one, and the model answers in metaphor. Turn down another, and every question becomes a funeral.</p>
+  </div>
+  <div class="demo" id="demo"></div>
+</div>
+
+<section id="explore">
+  <div class="prose">
+    <h2>Explore the neurons</h2>
+    <p>Each entry is one neuron in one layer, pushed by a fixed amount at every token. Nothing else changes: no system prompt, no fine-tuning. The answers below are <b>not cherry-picked</b>. They are the first sample generated for each of the eight test questions. Claude rated each one from 0 to 10 on the style, shown on the right.</p>
+  </div>
+  <div class="explorer">
+    <div class="list" id="list"></div>
+    <div class="panel" id="panel"></div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="prose">
+    <h2>How it works</h2>
+    <p>The steering recipe comes from <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a>. Pick a neuron <code>n</code> in the MLP of layer <code>L</code>. At every position, add a constant to that neuron's activation just before the down-projection:</p>
+    <div class="formula">act[n] += dose × median‖resid<sub>L</sub>‖ / ‖W<sub>down</sub>[:, n]‖</div>
+    <p>Dividing by the size of the neuron's output weights makes doses comparable across neurons. At dose 1, the neuron writes a vector into the residual stream as large as a typical residual vector at that layer. Negative doses push the neuron the other way. Most of the good neurons worked between ±0.5 and ±1.</p>
+    <p>The hard part is finding the right neuron. Qwen3.5-4B has 32 layers of 9,216 MLP neurons each, and steering takes a generation run for every neuron and dose. We needed a cheap way to rank candidates, and a judge we could trust.</p>
+
+    <h3>Attempt 1: which neurons fire differently?</h3>
+    <p>For each of 16 personas (pirate, Shakespeare, sleepy, noir…), we had the model answer 24 questions with a persona system prompt. We then replayed those answers <i>without</i> the system prompt and ranked neurons by how differently they fired on persona text than on neutral answers. The model judged its own outputs.</p>
+    <p>This found a few real neurons, including a Shakespeare neuron (L2 N2712) and a cat neuron (L2 N7763). But it had two problems:</p>
+    <ul>
+      <li><b>The self-judge was badly calibrated.</b> It called an anxiety neuron "sarcastic" and rewarded outputs stuck repeating "menus menus menus".</li>
+      <li><b>Activation difference finds neurons that read a style, not ones that write it.</b> A neuron that lights up on pirate text does not make the model talk like a pirate when you turn it up.</li>
+    </ul>
+
+    <h3>A better judge</h3>
+    <p>We re-scored everything offline with Claude (Sonnet for finals, Haiku for the large screens). The judge sees batches of shuffled samples and rates each one from 0 to 10 on <i>all</i> 16 styles, plus whether it answers the question and whether it reads fluently. Rating every style at once also catches neurons that hit a style they weren't searched for. Two scores matter:</p>
+    <div class="formula">style = concept × fluent        keep = concept × min(fluent, on_topic)</div>
+    <p>Re-judging the first run's screen showed that the ranking, not the judge, was the main bottleneck. For most styles, no candidate was any good.</p>
+
+    <h3>Attempt 2: ask the gradient what writes the style</h3>
+    <p>So we asked a direct question: which neuron, if turned up, makes the persona's answer more likely? We add a zero vector at every layer's down-projection input and backpropagate the log-probability of the persona answer (no system prompt) minus that of a neutral answer. One backward pass gives, for all 294,912 neurons at once, a first-order estimate of how a dose changes the gap between persona and neutral text.</p>
+    <p>We took 20 candidates per style, 3 doses each: 965 configurations, rated by Haiku. The best 3 neurons per style then went to finals at three doses each, with 16 answers per configuration rated by Sonnet: 1,608 rated answers in total.</p>
+  </div>
+  <div class="prose">
+    <h3>Best single neuron per style, attempt 1 vs attempt 2</h3>
+    <p class="note">Style score of the best single neuron in each run's finals (0 = no effect, 1 = full style in every fluent answer). Attempt 1 covered 12 styles.</p>
+  </div>
+  <div class="chart" id="compare"></div>
+  <div class="legend"><span><i style="background:#cfc8b8"></i>Attempt 1: activation difference</span><span><i style="background:var(--accent)"></i>Attempt 2: gradient attribution</span></div>
+
+  <div class="prose" style="margin-top:36px">
+    <h3>What we noticed</h3>
+    <ul>
+      <li><b>Voice and topic are different neurons.</b> Some neurons change <i>how</i> the model talks (Shakespeare, poet, hype). Others change <i>what</i> it talks about: the sleepy neuron often writes about sleep, and the cat neuron decides your squeaky door is a cat.</li>
+      <li><b>Early layers carry style, late layers push tokens.</b> The top of the gradient ranking is crowded with late-layer neurons that just boost one token (for pirate, "arr"). Turned up, they repeat that word. The useful style neurons sit mostly in layers 2–12.</li>
+      <li><b>Some neurons are stranger than their label.</b> L5 N7331 was found while searching for "melancholy". What it actually does is offer condolences for a loss you never mentioned, even when asked about refrigerators.</li>
+      <li><b>Every persona trades off against the answer.</b> The neurons that stay most on topic (hype, Shakespeare, food) are also the subtler ones. Turn them up further and the answer goes first.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sets">
+  <div class="prose">
+    <h2>How few neurons does a pirate need?</h2>
+    <div id="v3"></div>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="prose">
+    <h2>Limits</h2>
+    <ul>
+      <li><b>The judge is a language model.</b> Claude's ratings are much better than the model judging itself, but they are still ratings. All samples and scores are in the repo, so you can read them yourself.</li>
+      <li><b>Small samples.</b> Finals use 8 questions × 2 samples (temperature 0.7). Differences under about 0.05 in style score are noise.</li>
+      <li><b>First-order search.</b> Gradient attribution is a linear estimate at dose 0, while real doses are large. It ranks candidates well, but it can miss neurons that only matter at high doses.</li>
+      <li><b>One model.</b> Neuron indices are specific to <code>Qwen/Qwen3.5-4B</code> and will not transfer to other models.</li>
+    </ul>
+    <h3>Reproduce it</h3>
+    <p>Each run is one Python script that runs on Kaggle's free 2× T4 GPUs: <code>src/hunt3.py</code> for the current version. Outputs are judged offline with <code>src/rejudge.py</code>, which calls the <code>claude</code> CLI. All samples and judge scores are in <code>results/</code>. See the <a href="https://github.com/arjunkshah12345-hash/persona-neurons">README</a>.</p>
+  </div>
+</section>
+
+<footer>Steering recipe by <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a>. Model: Qwen/Qwen3.5-4B. Code and data: <a href="https://github.com/arjunkshah12345-hash/persona-neurons">github.com/arjunkshah12345-hash/persona-neurons</a> (MIT).</footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+const D = window.DATA;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// light markdown: the model writes **bold**, *italics* and ### headers
+const md = s => esc(s).replace(/^#{1,4}\s*(.+)$/gm, "<b>$1</b>").replace(/^\s*---+\s*$/gm, "")
+  .replace(/\*\*([^*\n]+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\*)/g, "$1<i>$2</i>");
+const fmt = d => (d > 0 ? "+" : "") + (+d.toFixed(3));
+const pct = v => Math.round(v * 100);
+
+// hero: condolence neuron on the refrigerator question
+(function hero() {
+  const nr = D.neurons.find(x => x.L === 5 && x.n === 7331);
+  const q = "Explain how a refrigerator keeps things cold.";
+  const smp = nr.doses[nr.best].samples.find(s => s.q === q);
+  const cut = t => t.length > 230 ? t.slice(0, 230).replace(/\s+\S*$/, "") + "…" : t;
+  $("#demo").innerHTML = `<div class="q">“${esc(q)}”</div>
+    <div class="row"><div class="tag">unsteered</div><div class="txt">${md(cut(D.baseline[q]))}</div></div>
+    <div class="row"><div class="tag on">L5 N7331<br>${fmt(nr.doses[nr.best].dose)}</div><div class="txt">${md(cut(smp.out))}</div></div>`;
+})();
+
+// explorer
+let cur = 0, dsel = null, showBase = false;
+function renderList() {
+  $("#list").innerHTML = D.neurons.map((x, i) => {
+    const s = x.doses[x.best].style;
+    return `<button class="${i === cur ? "sel" : ""}" data-i="${i}"><span>${esc(x.label)}</span><span class="id">L${x.L}·${x.n}</span><span class="bar"><i style="width:${pct(s)}%"></i></span></button>`;
+  }).join("");
+  document.querySelectorAll("#list button").forEach(b => b.onclick = () => { cur = +b.dataset.i; dsel = null; render(); });
+}
+function render() {
+  renderList();
+  const x = D.neurons[cur];
+  const di = dsel ?? x.best, d = x.doses[di];
+  $("#panel").innerHTML = `
+    <div class="panel-head"><h3>${esc(x.label)}</h3><span class="nid">layer ${x.L} · neuron ${x.n} · rated as “${esc(x.concept)}”</span></div>
+    <p class="desc">${esc(x.note)}</p>
+    <div class="controls">
+      <span><span class="lbl">Dose</span><span class="seg">${x.doses.map((dd, j) => `<button data-j="${j}" class="${j === di ? "sel" : ""}">${fmt(dd.dose)}${j === x.best ? " ★" : ""}</button>`).join("")}</span></span>
+      <label class="toggle"><input type="checkbox" id="base" ${showBase ? "checked" : ""}> show unsteered answers</label>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${d.style.toFixed(2)}</b><span>style (concept × fluent)</span></div>
+      <div class="stat"><b>${pct(d.concept)}%</b><span>concept strength</span></div>
+      <div class="stat"><b>${pct(d.on_topic)}%</b><span>answers the question</span></div>
+      <div class="stat"><b>${pct(d.fluent)}%</b><span>fluent</span></div>
+    </div>
+    <div class="samples">${d.samples.map(s => `<div class="smp"><div class="q"><span>${esc(s.q)}</span><span class="sc">${esc(x.concept)} ${s.score}/10</span></div>
+      <div class="o">${md(s.out) || "<i>(empty)</i>"}</div>${showBase ? `<div class="b">${md(D.baseline[s.q] || "")}</div>` : ""}</div>`).join("")}</div>`;
+  document.querySelectorAll(".seg button").forEach(b => b.onclick = () => { dsel = +b.dataset.j; render(); });
+  $("#base").onchange = e => { showBase = e.target.checked; render(); };
+}
+render();
+
+// attempt 1 vs 2
+(function compare() {
+  const rows = [...D.compare].sort((a, b) => b.v2 - a.v2);
+  const max = Math.max(...rows.map(r => Math.max(r.v1 || 0, r.v2)));
+  $("#compare").innerHTML = rows.map(r => `<div class="crow"><span>${esc(r.concept)}</span>
+    <div class="track">${r.v1 != null ? `<div class="v1" style="width:${r.v1 / max * 100}%"></div>` : ""}<div class="v2" style="width:${r.v2 / max * 100}%"></div></div>
+    <span class="num">${r.v2.toFixed(2)}</span></div>`).join("");
+})();
+
+// v3: small sets of neurons
+(function v3() {
+  const el = $("#v3");
+  if (!D.v3_screen) {
+    el.innerHTML = `<p>No single neuron makes the model talk like a pirate, a cowboy or Yoda; the best single neurons for those score 0.01 or less. Our current run steers the top-k attributed neurons together to find out how many it takes. Results will appear here.</p>`;
+    return;
+  }
+  if (window.renderV3) window.renderV3(el);
+})();
+</script>
+</body>
+</html>
