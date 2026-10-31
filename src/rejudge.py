@@ -130,8 +130,10 @@ def call(batch):
             txt = txt[txt.index("["): txt.rindex("]") + 1]
             rows = {int(x["id"]): x for x in json.loads(txt)}
             assert set(rows) == set(range(len(batch))), "missing ids"
-            for n, it in enumerate(batch):
-                it["s"] = {k: int(rows[n][k]) for k in KEYS}
+            scores = [{k: int(rows[n][k]) for k in KEYS} for n in range(len(batch))]
+            with lock:  # save() serializes items from other threads
+                for it, sc in zip(batch, scores):
+                    it["s"] = sc
             break
         except Exception as e:  # noqa: BLE001
             print(f"  retry {attempt}: {e!r} stdout={p.stdout[-300:]!r} stderr={p.stderr[-200:]!r}",
