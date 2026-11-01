@@ -5,143 +5,169 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>One neuron, one personality: steering Qwen3.5-4B with single MLP neurons</title>
 <meta name="description" content="We searched all 294,912 MLP neurons in Qwen3.5-4B for single neurons that make the model talk like a poet, a mourner, Shakespeare or a hype man. Interactive results and a writeup.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/GeistSerifVF.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+@font-face{font-family:"Geist Serif";src:url(fonts/GeistSerifVF.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist";src:url(fonts/Geist-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(fonts/GeistMono-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
 :root{
-  --paper:#f7f5ef; --ink:#1c1b18; --soft:#5f5b52; --faint:#8d887c; --rule:#dedad0; --card:#fffdf8;
-  --accent:#b4441f; --accent-soft:#f4e3d8; --blue:#2f5d8a; --serif:"Newsreader",Georgia,serif;
-  --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --bg:#f7f7f4; --ink:#111110; --soft:#5c5c57; --faint:#9a9a93; --rule:#e2e2dc; --hair:#ececE6;
+  --accent:#ff4a1c;
+  --serif:"Geist Serif","Times New Roman",serif; --sans:"Geist",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
 }
 *{box-sizing:border-box}
-html{background:var(--paper);color:var(--ink)}
-body{margin:0;font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:var(--accent);text-underline-offset:2px}
-.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
-.prose{max-width:680px}
-header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-size:13px;color:var(--soft)}
-header.top b{font-family:var(--mono);font-weight:500;color:var(--ink)}
-header.top nav a{color:var(--soft);text-decoration:none;margin-left:20px}
+html{background:var(--bg);color:var(--ink)}
+body{margin:0;font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink)}
+::selection{background:var(--ink);color:var(--bg)}
+canvas.d{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+.prose{max-width:640px}
+.mono,code{font-family:var(--mono);font-size:.86em}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint)}
+
+header.top{display:flex;justify-content:space-between;align-items:center;height:64px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:12px}
+header.top b{font-weight:500;display:flex;align-items:center;gap:10px}
+header.top b i{width:10px;height:10px;background:var(--accent);display:inline-block}
+header.top nav a{color:var(--soft);text-decoration:none;margin-left:24px}
 header.top nav a:hover{color:var(--ink)}
 
-.hero{padding:56px 0 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
-.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,5.6vw,66px);line-height:1.02;letter-spacing:-.02em;margin:14px 0 20px}
-h1 em{color:var(--accent)}
-.lede{font-size:18px;color:var(--soft);max-width:520px}
-.demo{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 24px}
-.demo .q{font-size:13px;color:var(--soft);margin-bottom:12px}
-.demo .row{display:grid;grid-template-columns:86px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--rule)}
-.demo .tag{font-family:var(--mono);font-size:11px;color:var(--faint);padding-top:3px}
-.demo .tag.on{color:var(--accent)}
-.demo .txt{font-family:var(--serif);font-size:16.5px;line-height:1.45}
+/* hero */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:64px;padding:96px 0 72px;align-items:end}
+.hero .lbl{margin-bottom:28px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(44px,5.8vw,76px);line-height:.98;letter-spacing:-.035em;margin:0 0 28px}
+h1 span{color:var(--faint)}
+.lede{font-family:var(--serif);font-size:20px;line-height:1.5;color:var(--soft);max-width:470px;margin:0}
+.field{position:relative}
+.field canvas{width:100%;height:340px}
+.field .tag{position:absolute;font-family:var(--mono);font-size:11px;background:var(--bg);padding:2px 6px;border:1px solid var(--ink);white-space:nowrap;pointer-events:none}
+.field .axis{display:flex;justify-content:space-between;margin-top:10px}
+.demo{display:grid;grid-template-columns:180px 1fr 1fr;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+.demo>div{padding:24px 28px 28px 0}
+.demo>div+div{padding-left:28px;border-left:1px solid var(--rule)}
+.demo .q{font-family:var(--serif);font-size:19px;line-height:1.35}
+.demo .txt{font-family:var(--serif);font-size:17px;line-height:1.55;margin-top:10px}
+.demo .on .lbl{color:var(--accent)}
 
-h2{font-family:var(--serif);font-weight:400;font-size:34px;letter-spacing:-.01em;line-height:1.15;margin:0 0 16px}
-h3{font-family:var(--sans);font-size:15px;font-weight:600;margin:40px 0 8px}
-section{padding:88px 0;border-top:1px solid var(--rule)}
-.prose p{margin:0 0 16px}
-.prose p, .prose li{font-family:var(--serif);font-size:19px;line-height:1.6}
-.prose li{margin-bottom:6px}
-code,.mono{font-family:var(--mono);font-size:.84em}
-.prose code{background:#ece8dd;padding:1px 5px;border-radius:4px}
-.formula{font-family:var(--mono);font-size:14px;border-left:2px solid var(--accent);padding:6px 18px;margin:8px 0 20px;overflow-x:auto;white-space:pre}
-.note{font-size:14px;color:var(--soft)}
+/* sections */
+section{padding:112px 0 0}
+.sh{display:grid;grid-template-columns:180px 1fr;gap:0;margin-bottom:40px}
+.sh .num{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:14px}
+h2{font-family:var(--serif);font-weight:400;font-size:44px;letter-spacing:-.025em;line-height:1.05;margin:0}
+h3{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.04em;text-transform:uppercase;margin:56px 0 14px}
+.body{margin-left:180px}
+.prose p,.prose li{font-family:var(--serif);font-size:18px;line-height:1.62}
+.prose p{margin:0 0 18px}
+.prose ul{padding-left:20px;margin:0 0 18px}
+.prose li{margin-bottom:8px}
+.prose li::marker{color:var(--faint)}
+.prose b,.pair b,.fc b,.demo b{font-family:var(--sans);font-weight:600;font-size:.86em;letter-spacing:-.005em}
+.prose code{background:#ebebe6;padding:1px 5px;font-size:.78em}
+.formula{font-family:var(--mono);font-size:13.5px;border-left:2px solid var(--ink);padding:4px 0 4px 18px;margin:6px 0 22px;white-space:pre;overflow-x:auto}
+.note,.prose p.note{font-size:13px;line-height:1.55;color:var(--soft);font-family:var(--sans)}
 
 /* explorer */
-.explorer{display:grid;grid-template-columns:250px 1fr;gap:28px;margin-top:28px}
+.explorer{display:grid;grid-template-columns:180px 1fr;border-top:1px solid var(--ink)}
 .explorer>*{min-width:0}
-.list{display:flex;flex-direction:column;gap:2px;position:sticky;top:16px;align-self:start}
-.list button{all:unset;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 12px;border-radius:8px;font-size:14px;color:var(--soft)}
-.list button:hover{color:var(--ink);background:#efebe1}
-.list button.sel{background:var(--ink);color:var(--paper)}
-.list button .sc{font-family:var(--mono);font-size:11px;opacity:.55}
-.panel-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:baseline}
-.panel-head h3{font-family:var(--serif);font-weight:400;font-size:32px;margin:0;line-height:1.1}
-.panel-head .nid{font-family:var(--mono);font-size:12px;color:var(--faint)}
-.panel .desc{color:var(--soft);margin:8px 0 22px;font-size:15px}
-.controls{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;padding:14px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-bottom:22px}
-.seg{display:inline-flex;gap:2px}
-.seg button{all:unset;cursor:pointer;padding:4px 10px;border-radius:6px;font-family:var(--mono);font-size:12.5px;color:var(--soft)}
-.seg button:hover{color:var(--ink);background:#efebe1}
-.seg button.sel{background:var(--accent);color:#fff}
-.lbl{font-size:11px;color:var(--faint);margin-right:8px;text-transform:uppercase;letter-spacing:.06em}
-.stats{display:flex;gap:24px;margin-left:auto}
-.stat{display:flex;flex-direction:column;align-items:flex-end}
-.stat b{font-family:var(--mono);font-weight:500;font-size:15px;line-height:1.2}
-.stat span{font-size:11px;color:var(--faint)}
-.qs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:26px}
-.qs button{all:unset;cursor:pointer;font-size:13px;padding:4px 11px;border-radius:999px;color:var(--soft);border:1px solid var(--rule)}
-.qs button:hover{color:var(--ink);border-color:#c9c3b6}
-.qs button.sel{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.qtitle{font-family:var(--serif);font-size:22px;margin:0 0 18px}
-.pair{display:grid;grid-template-columns:1.3fr 1fr;gap:36px}
-.pair .lab{font-family:var(--mono);font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;justify-content:space-between}
-.pair .lab.on{color:var(--accent)}
-.pair .o{font-family:var(--serif);font-size:17.5px;line-height:1.6;white-space:pre-wrap}
+.list{display:flex;flex-direction:column;position:sticky;top:0;align-self:start;padding-top:12px}
+.list button{all:unset;cursor:pointer;display:grid;grid-template-columns:1fr 34px;gap:8px;align-items:center;padding:7px 16px 7px 0;font-size:13.5px;color:var(--soft)}
+.list button:hover{color:var(--ink)}
+.list button.sel{color:var(--ink);font-weight:500}
+.list button.sel span:first-child::before{content:"";display:inline-block;width:7px;height:7px;background:var(--accent);margin-right:8px;vertical-align:1px}
+.list canvas{width:34px;height:8px}
+.panel{border-left:1px solid var(--rule);padding:28px 0 0 36px}
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.panel-head h4{font-family:var(--serif);font-weight:400;font-size:36px;letter-spacing:-.02em;margin:0;line-height:1.05}
+.panel .desc{font-family:var(--serif);color:var(--soft);font-size:17px;margin:10px 0 28px;max-width:560px}
+.bar{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:end;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.seg{display:flex;margin-top:8px}
+.seg button{all:unset;cursor:pointer;font-family:var(--mono);font-size:12.5px;padding:5px 11px;border:1px solid var(--rule);margin-right:-1px;color:var(--soft)}
+.seg button:hover{color:var(--ink)}
+.seg button.sel{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.meter .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.meter b{font-family:var(--mono);font-weight:500;font-size:14px}
+.meter canvas{width:100%;height:10px}
+.qs{display:flex;flex-wrap:wrap;gap:4px 20px;margin:24px 0 30px}
+.qs button{all:unset;cursor:pointer;font-size:13.5px;color:var(--faint);padding:2px 0;border-bottom:1px solid transparent}
+.qs button:hover{color:var(--ink)}
+.qs button.sel{color:var(--ink);border-bottom-color:var(--ink)}
+.qtitle{font-family:var(--serif);font-size:26px;letter-spacing:-.01em;margin:0 0 22px}
+.pair{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;padding-bottom:12px}
+.pair .lab{display:flex;justify-content:space-between;margin-bottom:12px}
+.pair .on .lab .lbl:first-child{color:var(--accent)}
+.pair .o{font-family:var(--serif);font-size:18px;line-height:1.6;white-space:pre-wrap}
 .pair .b{font-family:var(--serif);font-size:15.5px;line-height:1.6;color:var(--soft);white-space:pre-wrap}
 
 /* charts */
-.chart{margin:24px 0 8px;max-width:760px}
-.crow{display:grid;grid-template-columns:110px 1fr 84px;gap:12px;align-items:center;padding:5px 0;font-size:14px}
-.crow .track{position:relative;height:18px}
-.crow .v1,.crow .v2{position:absolute;left:0;height:8px;border-radius:2px}
-.crow .v1{top:0;background:#cfc8b8}
-.crow .v2{top:10px;background:var(--accent)}
-.crow .num{font-family:var(--mono);font-size:12px;color:var(--soft);text-align:right;white-space:nowrap}
+.chart{margin:8px 0 0;max-width:820px}
+.crow{display:grid;grid-template-columns:110px 1fr 92px;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid var(--hair);font-size:13.5px}
+.crow canvas{width:100%;height:22px}
+.crow .num{font-family:var(--mono);font-size:12px;text-align:right;white-space:nowrap}
 .crow .num small{color:var(--faint);font-size:10.5px;margin-left:6px}
-.legend{display:flex;gap:18px;font-size:12.5px;color:var(--soft);margin-top:10px}
-.legend i{display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
-.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 32px;margin-top:22px}
-.kcard{border-top:1px solid var(--rule);padding-top:10px}
-.kcard .t{font-size:13px;font-weight:600;text-transform:capitalize;display:flex;justify-content:space-between}
-.kcard .t span{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--faint)}
-.kcard svg{display:block;width:100%;height:84px;margin-top:6px}
-.find{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:22px}
-.fc{border-top:2px solid var(--ink);padding-top:12px}
-.fc .h{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:10px}
-.fc .h b{font-weight:600;text-transform:capitalize}
-.fc .h span{font-family:var(--mono);font-size:11px;color:var(--faint)}
-.fc .q{font-size:12.5px;color:var(--soft);margin-bottom:6px}
+.legend{display:flex;gap:24px;margin-top:14px;font-size:12.5px;color:var(--soft)}
+.legend canvas{display:inline-block;width:22px;height:10px;vertical-align:-1px;margin-right:8px}
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px 40px;margin-top:8px;max-width:940px}
+.kcard .t{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:10px;font-size:13.5px;font-weight:500;text-transform:capitalize}
+.kcard .t span{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--faint);text-transform:none}
+.kcard canvas{width:100%;height:96px;margin-top:10px}
+.kcard .ax{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:4px}
+.find{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;max-width:940px}
+.fc .h{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:10px;margin-bottom:12px;font-size:13.5px}
+.fc .h b{font-weight:500;text-transform:capitalize}
+.fc .q{font-size:12.5px;color:var(--faint);margin-bottom:8px}
 .fc .o{font-family:var(--serif);font-size:16px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:9;-webkit-box-orient:vertical;overflow:hidden}
-table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 24px}
-th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule)}
-th{font-weight:600;font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
-td.m{font-family:var(--mono);font-size:12.5px}
-footer{padding:48px 0 80px;color:var(--faint);font-size:13px;border-top:1px solid var(--rule)}
 
-@media (max-width:860px){
-  .hero{grid-template-columns:1fr;gap:32px;padding-top:28px}
+footer{margin-top:120px;padding:28px 0 64px;border-top:1px solid var(--ink);display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--soft)}
+footer canvas{width:120px;height:12px;grid-column:2;grid-row:1/3}
+
+@media (max-width:900px){
+  .wrap{padding:0 20px}
+  .hero{grid-template-columns:1fr;gap:40px;padding:56px 0 48px}
+  .field canvas{height:220px}
+  .demo{grid-template-columns:1fr}
+  .demo>div,.demo>div+div{padding:18px 0;border-left:0;border-top:1px solid var(--rule)}
+  .sh{grid-template-columns:1fr;gap:8px}
+  .sh .num{padding-top:0}
+  h2{font-size:34px}
+  .body{margin-left:0}
   .explorer{grid-template-columns:1fr}
-  .list{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px}
-  .list button{white-space:nowrap}
-  .list button .sc{display:none}
-  .stats{margin-left:0}
+  .list{position:static;flex-direction:row;overflow-x:auto;gap:18px;padding:12px 0;border-bottom:1px solid var(--rule)}
+  .list button{white-space:nowrap;grid-template-columns:auto;padding:4px 0}
+  .list canvas{display:none}
+  .panel{border-left:0;padding:24px 0 0}
+  .bar{grid-template-columns:1fr;gap:20px}
+  .meters{grid-template-columns:repeat(2,1fr)}
   .pair,.find{grid-template-columns:1fr}
-  .kgrid{grid-template-columns:repeat(2,1fr)}
-  header.top nav{display:none}
+  .kgrid{grid-template-columns:repeat(2,1fr);gap:28px 20px}
+  header.top nav a:not(:last-child){display:none}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="top"><b>persona-neurons</b>
-  <nav><a href="#explore">Explorer</a><a href="#how">How it works</a><a href="#sets">Sets</a><a href="#limits">Limits</a><a href="https://github.com/arjunkshah12345-hash/persona-neurons">GitHub</a></nav>
+<header class="top"><b><i></i>persona-neurons</b>
+  <nav><a href="#explore">Explorer</a><a href="#how">Method</a><a href="#sets">Sets</a><a href="#limits">Limits</a><a href="https://github.com/arjunkshah12345-hash/persona-neurons">GitHub ↗</a></nav>
 </header>
 
 <div class="hero">
   <div>
-    <div class="kicker">Qwen3.5-4B · 294,912 MLP neurons</div>
-    <h1>One neuron, <em>one personality.</em></h1>
+    <div class="lbl">Qwen3.5-4B · 32 layers × 9,216 MLP neurons</div>
+    <h1>One neuron, <span>one personality.</span></h1>
     <p class="lede">We searched every MLP neuron in a 4B-parameter language model for single neurons that change how it talks. Turn up one, and the model answers in metaphor. Turn down another, and every question becomes a funeral.</p>
   </div>
-  <div class="demo" id="demo"></div>
+  <div class="field" id="field">
+    <canvas class="d" id="fieldc"></canvas>
+    <div class="axis"><span class="lbl">Neuron 0</span><span class="lbl">Rows: layers 0–31 · illustration</span><span class="lbl">Neuron 9,215</span></div>
+  </div>
 </div>
+<div class="demo" id="demo"></div>
 
 <section id="explore">
-  <div class="prose">
-    <h2>Explore the neurons</h2>
-    <p>Each entry is one neuron in one layer, pushed by a fixed amount at every token. Nothing else changes: no system prompt, no fine-tuning. The answers below are <b>not cherry-picked</b>. They are the first sample generated for each of the eight test questions. Claude rated each one from 0 to 10 on the style.</p>
+  <div class="sh"><div class="num">01</div><div><h2>Explore the neurons</h2></div></div>
+  <div class="body prose" style="margin-bottom:40px">
+    <p>Each entry is one neuron in one layer, pushed by a fixed amount at every token. Nothing else changes: no system prompt, no fine-tuning. The answers are <b>not cherry-picked</b>. Each is the first sample generated for that question, rated 0 to 10 on the style by Claude.</p>
   </div>
   <div class="explorer">
     <div class="list" id="list"></div>
@@ -150,8 +176,8 @@ footer{padding:48px 0 80px;color:var(--faint);font-size:13px;border-top:1px soli
 </section>
 
 <section id="how">
-  <div class="prose">
-    <h2>How it works</h2>
+  <div class="sh"><div class="num">02</div><div><h2>How it works</h2></div></div>
+  <div class="body"><div class="prose">
     <p>The steering recipe comes from <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a>. Pick a neuron <code>n</code> in the MLP of layer <code>L</code>. At every position, add a constant to that neuron's activation just before the down-projection:</p>
     <div class="formula">act[n] += dose × median‖resid<sub>L</sub>‖ / ‖W<sub>down</sub>[:, n]‖</div>
     <p>Dividing by the size of the neuron's output weights makes doses comparable across neurons. At dose 1, the neuron writes a vector into the residual stream as large as a typical residual vector at that layer. Negative doses push the neuron the other way. Most of the good neurons worked between ±0.5 and ±1.</p>
@@ -179,9 +205,8 @@ footer{padding:48px 0 80px;color:var(--faint);font-size:13px;border-top:1px soli
     <p class="note">Style score of the best single neuron in each run's finals (0 = no effect, 1 = full style in every fluent answer). Attempt 1 covered 12 styles.</p>
   </div>
   <div class="chart" id="compare"></div>
-  <div class="legend"><span><i style="background:#cfc8b8"></i>Attempt 1: activation difference</span><span><i style="background:var(--accent)"></i>Attempt 2: gradient attribution</span></div>
 
-  <div class="prose" style="margin-top:36px">
+  <div class="prose" >
     <h3>What we noticed</h3>
     <ul>
       <li><b>Voice and topic are different neurons.</b> Some neurons change <i>how</i> the model talks (Shakespeare, poet, hype). Others change <i>what</i> it talks about: the sleepy neuron often writes about sleep, and the cat neuron decides your squeaky door is a cat.</li>
@@ -190,16 +215,17 @@ footer{padding:48px 0 80px;color:var(--faint);font-size:13px;border-top:1px soli
       <li><b>Every persona trades off against the answer.</b> The neurons that stay most on topic (hype, Shakespeare, food) are also the subtler ones. Turn them up further and the answer goes first.</li>
     </ul>
   </div>
+</div>
 </section>
 
 <section id="sets">
-  <div class="prose"><h2>Can a set of neurons do what one can't?</h2></div>
-  <div id="v3"></div>
+  <div class="sh"><div class="num">03</div><div><h2>Can a set of neurons do what one can't?</h2></div></div>
+  <div class="body" id="v3"></div>
 </section>
 
 <section id="limits">
-  <div class="prose">
-    <h2>Limits</h2>
+  <div class="sh"><div class="num">04</div><div><h2>Limits</h2></div></div>
+  <div class="body"><div class="prose">
     <ul>
       <li><b>The judge is a language model.</b> Claude's ratings are much better than the model judging itself, but they are still ratings. All samples and scores are in the repo, so you can read them yourself.</li>
       <li><b>Small samples.</b> Finals use 8 questions × 2 samples (temperature 0.7). Differences under about 0.05 in style score are noise.</li>
@@ -209,147 +235,245 @@ footer{padding:48px 0 80px;color:var(--faint);font-size:13px;border-top:1px soli
     <h3>Reproduce it</h3>
     <p>Each run is one Python script that runs on Kaggle's free 2× T4 GPUs: <code>src/hunt3.py</code> for the current version. Outputs are judged offline with <code>src/rejudge.py</code>, which calls the <code>claude</code> CLI. All samples and judge scores are in <code>results/</code>. See the <a href="https://github.com/arjunkshah12345-hash/persona-neurons">README</a>.</p>
   </div>
+</div>
 </section>
-
-<footer>Steering recipe by <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a>. Model: Qwen/Qwen3.5-4B. Code and data: <a href="https://github.com/arjunkshah12345-hash/persona-neurons">github.com/arjunkshah12345-hash/persona-neurons</a> (MIT).</footer>
+<footer><span>Steering recipe by <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a> · Model: Qwen/Qwen3.5-4B · Type: Geist Serif, Geist, Geist Mono (OFL)</span><span><a href="https://github.com/arjunkshah12345-hash/persona-neurons">github.com/arjunkshah12345-hash/persona-neurons</a> · MIT</span><canvas class="d" id="footmark"></canvas></footer>
 </div>
 
 <script src="data.js"></script>
 <script>
 const D = window.DATA;
 const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 // light markdown: the model writes **bold**, *italics* and ### headers
 const md = s => esc(s).replace(/^#{1,4}\s*(.+)$/gm, "<b>$1</b>").replace(/^\s*---+\s*$/gm, "")
   .replace(/\*\*([^*\n]+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\*)/g, "$1<i>$2</i>");
 const fmt = d => (d > 0 ? "+" : "") + (+d.toFixed(3));
 const pct = v => Math.round(v * 100);
+const INK = "#111110", ACC = "#ff4a1c", GREY = "#9a9a93";
 
-// hero: condolence neuron on the refrigerator question
-(function hero() {
+/* ---------- dither kit: ordered (Bayer 8×8) dithering on canvas ----------
+   A canvas is drawn at 1/PX resolution as layers of "ink amount" (0..1 per pixel, painted in
+   greyscale: black = full ink). Each layer is thresholded against the Bayer matrix and composited
+   in its own colour, then scaled up with nearest-neighbour so every dither dot is PX css pixels. */
+const BAYER = (() => {
+  let m = [[0]];
+  for (let n = 1; n < 8; n *= 2) m = [...m.map(r => [...r.map(v => 4 * v), ...r.map(v => 4 * v + 2)]), ...m.map(r => [...r.map(v => 4 * v + 3), ...r.map(v => 4 * v + 1)])];
+  return m.map(r => r.map(v => (v + 0.5) / 64));
+})();
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+function dither(cv, layers, PX = 2) {
+  const w = Math.max(1, Math.round(cv.clientWidth / PX)), h = Math.max(1, Math.round(cv.clientHeight / PX));
+  if (cv.width !== w) cv.width = w;
+  if (cv.height !== h) cv.height = h;
+  const out = cv.getContext("2d"), img = out.createImageData(w, h), px = img.data;
+  const off = dither.off || (dither.off = document.createElement("canvas"));
+  off.width = w; off.height = h;
+  const ctx = off.getContext("2d", { willReadFrequently: true });
+  for (const L of layers) {
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h); ctx.fillStyle = "#000"; ctx.strokeStyle = "#000";
+    L.draw(ctx, w, h);
+    const src = ctx.getImageData(0, 0, w, h).data, [r, g, b] = hex(L.color);
+    for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i += 4) {
+      if (1 - src[i] / 255 > BAYER[y & 7][x & 7]) { px[i] = r; px[i + 1] = g; px[i + 2] = b; px[i + 3] = 255; }
+    }
+  }
+  out.putImageData(img, 0, 0);
+}
+// horizontal bar whose ink ramps up along its length, so the dither pattern is visible
+const ramp = (v, lo = 0.18, hi = 1, y0 = 0, y1 = 1) => (ctx, w, h) => {
+  const x1 = Math.round(w * Math.max(0, Math.min(1, v)));
+  if (x1 < 1) return;
+  const g = ctx.createLinearGradient(0, 0, x1, 0), c = a => `rgb(${255 * (1 - a)},${255 * (1 - a)},${255 * (1 - a)})`;
+  g.addColorStop(0, c(lo)); g.addColorStop(1, c(hi));
+  ctx.fillStyle = g; ctx.fillRect(0, Math.round(h * y0), x1, Math.round(h * (y1 - y0)));
+};
+const redraws = [];
+const live = fn => { redraws.push(fn); fn(); };
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => redraws.forEach(f => f()), 120); });
+
+/* ---------- hero: dithered activation field ---------- */
+(function field() {
+  const cv = $("#fieldc"), wrap = $("#field");
+  const L = 5, N = 7331, NL = 32;
+  const tag = document.createElement("div"); tag.className = "tag"; tag.textContent = `L${L} · N${N} · −0.75`; wrap.appendChild(tag);
+  // smooth value noise
+  const R = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+  const sm = t => t * t * (3 - 2 * t);
+  const noise = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), xf = sm(x - xi), yf = sm(y - yi);
+    const a = R(xi, yi), b = R(xi + 1, yi), c = R(xi, yi + 1), d = R(xi + 1, yi + 1);
+    return a + (b - a) * xf + (c - a) * yf + (a - b - c + d) * xf * yf; };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, visible = true, last = 0;
+  new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(cv);
+  function frame(now) {
+    if (!reduce) requestAnimationFrame(frame);
+    if (!visible || now - last < 66) return;
+    last = now; t += 0.035;
+    const pulse = 0.55 + 0.45 * Math.sin(t * 1.6);
+    dither(cv, [
+      { color: INK, draw(ctx, w, h) {
+          const img = ctx.createImageData(w, h), d = img.data, rowH = h / NL;
+          for (let y = 0; y < h; y++) {
+            const layer = Math.floor(y / rowH), inRow = (y % rowH) / rowH;
+            for (let x = 0; x < w; x++) {
+              let v = 0.75 * noise(x / 26 + t * 0.4, layer * 0.9 + t * 0.15) * noise(x / 7 - t * 0.3, layer * 2.3);
+              v = Math.min(1, Math.pow(v, 1.35) * 1.25);
+              if (inRow > 0.82) v = 0;  // gap between layers
+              const k = (y * w + x) * 4, g = 255 * (1 - v); d[k] = d[k + 1] = d[k + 2] = g; d[k + 3] = 255;
+            }
+          }
+          ctx.putImageData(img, 0, 0);
+        } },
+      { color: ACC, draw(ctx, w, h) {
+          const rowH = h / NL, cx = Math.round(w * N / 9216), cy = (L + 0.41) * rowH;
+          const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.22 * (0.7 + 0.3 * pulse));
+          g.addColorStop(0, "rgb(0,0,0)"); g.addColorStop(0.15, `rgb(${110 - 60 * pulse},${110 - 60 * pulse},${110 - 60 * pulse})`); g.addColorStop(1, "rgb(255,255,255)");
+          ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = "#000"; ctx.fillRect(cx - 2, Math.floor(L * rowH), 4, Math.ceil(rowH * 0.82));
+        } },
+    ], 3);
+    const rowH = cv.clientHeight / NL;
+    tag.style.left = Math.min(cv.clientWidth - 150, cv.clientWidth * N / 9216 + 14) + "px";
+    tag.style.top = (L * rowH - 26) + "px";
+  }
+  requestAnimationFrame(frame);
+  if (reduce) addEventListener("resize", () => requestAnimationFrame(frame));
+})();
+
+/* ---------- hero demo: condolence neuron on the refrigerator question ---------- */
+(function demo() {
   const nr = D.neurons.find(x => x.L === 5 && x.n === 7331);
   const q = "Explain how a refrigerator keeps things cold.";
   const smp = nr.doses[nr.best].samples.find(s => s.q === q);
-  const cut = t => t.length > 230 ? t.slice(0, 230).replace(/\s+\S*$/, "") + "…" : t;
-  $("#demo").innerHTML = `<div class="q">“${esc(q)}”</div>
-    <div class="row"><div class="tag">unsteered</div><div class="txt">${md(cut(D.baseline[q]))}</div></div>
-    <div class="row"><div class="tag on">L5 N7331<br>${fmt(nr.doses[nr.best].dose)}</div><div class="txt">${md(cut(smp.out))}</div></div>`;
+  const cut = t => t.length > 260 ? t.slice(0, 260).replace(/\s+\S*$/, "") + "…" : t;
+  $("#demo").innerHTML = `<div><div class="lbl">Prompt</div><div class="q" style="margin-top:10px">“${esc(q)}”</div></div>
+    <div><div class="lbl">Unsteered</div><div class="txt">${md(cut(D.baseline[q]))}</div></div>
+    <div class="on"><div class="lbl">L5 N7331 at ${fmt(nr.doses[nr.best].dose)}</div><div class="txt">${md(cut(smp.out))}</div></div>`;
 })();
 
-// explorer
+/* ---------- explorer ---------- */
 const SHORT = {"How do I fix a squeaky door?": "Squeaky door", "What is gravity?": "Gravity",
   "Give me advice for my first day at a new job.": "First day at work", "How do I learn a new language quickly?": "Learn a language",
   "What is the best way to organize my desk?": "Organize my desk", "Explain how a refrigerator keeps things cold.": "Refrigerator",
   "What's a good name for a new car?": "Name a car", "How do I get better sleep?": "Better sleep"};
 let cur = 0, dsel = null, qsel = "What is gravity?";
+const maxStyle = Math.max(...D.neurons.map(x => x.doses[x.best].style));
 function renderList() {
   $("#list").innerHTML = D.neurons.map((x, i) =>
-    `<button class="${i === cur ? "sel" : ""}" data-i="${i}"><span>${esc(x.label)}</span><span class="sc">${x.doses[x.best].style.toFixed(2)}</span></button>`).join("");
-  document.querySelectorAll("#list button").forEach(b => b.onclick = () => { cur = +b.dataset.i; dsel = null; render(); });
+    `<button class="${i === cur ? "sel" : ""}" data-i="${i}" title="style ${x.doses[x.best].style.toFixed(2)}"><span>${esc(x.label)}</span><canvas class="d"></canvas></button>`).join("");
+  $$("#list button").forEach(b => b.onclick = () => { cur = +b.dataset.i; dsel = null; render(); });
+  $$("#list canvas").forEach((cv, i) => dither(cv, [{ color: i === cur ? ACC : INK, draw: ramp(D.neurons[i].doses[D.neurons[i].best].style / maxStyle, 0.45, 1) }], 2));
 }
 function render() {
   renderList();
   const x = D.neurons[cur];
   const di = dsel ?? x.best, d = x.doses[di];
   const smp = d.samples.find(s => s.q === qsel) || d.samples[0];
+  const M = [["Style", d.style, d.style.toFixed(2)], [x.concept, d.concept, pct(d.concept) + "%"], ["On topic", d.on_topic, pct(d.on_topic) + "%"], ["Fluent", d.fluent, pct(d.fluent) + "%"]];
   $("#panel").innerHTML = `
-    <div class="panel-head"><h3>${esc(x.label)}</h3><span class="nid">layer ${x.L} · neuron ${x.n}</span></div>
+    <div class="panel-head"><h4>${esc(x.label)}</h4><span class="lbl">Layer ${x.L} · Neuron ${x.n}</span></div>
     <p class="desc">${esc(x.note)}</p>
-    <div class="controls">
-      <span><span class="lbl">Dose</span><span class="seg">${x.doses.map((dd, j) => `<button data-j="${j}" class="${j === di ? "sel" : ""}" title="${j === x.best ? "best dose" : ""}">${fmt(dd.dose)}</button>`).join("")}</span></span>
-      <div class="stats">
-        <div class="stat"><b>${d.style.toFixed(2)}</b><span>style</span></div>
-        <div class="stat"><b>${pct(d.concept)}%</b><span>${esc(x.concept)}</span></div>
-        <div class="stat"><b>${pct(d.on_topic)}%</b><span>on topic</span></div>
-        <div class="stat"><b>${pct(d.fluent)}%</b><span>fluent</span></div>
-      </div>
+    <div class="bar">
+      <div><div class="lbl">Dose</div><div class="seg">${x.doses.map((dd, j) => `<button data-j="${j}" class="${j === di ? "sel" : ""}">${fmt(dd.dose)}</button>`).join("")}</div></div>
+      <div class="meters">${M.map(([k, , s]) => `<div class="meter"><div class="top"><span class="lbl">${esc(k)}</span><b>${s}</b></div><canvas class="d"></canvas></div>`).join("")}</div>
     </div>
     <div class="qs">${d.samples.map(s => `<button data-q="${esc(s.q)}" class="${s.q === smp.q ? "sel" : ""}">${esc(SHORT[s.q] || s.q)}</button>`).join("")}</div>
     <p class="qtitle">“${esc(smp.q)}”</p>
     <div class="pair">
-      <div><div class="lab on"><span>Steered · ${fmt(d.dose)}</span><span>${esc(x.concept)} ${smp.score}/10</span></div><div class="o">${md(smp.out) || "<i>(empty)</i>"}</div></div>
-      <div><div class="lab"><span>Unsteered</span></div><div class="b">${md(D.baseline[smp.q] || "")}</div></div>
+      <div class="on"><div class="lab"><span class="lbl">Steered · ${fmt(d.dose)}</span><span class="lbl">${esc(x.concept)} ${smp.score}/10</span></div><div class="o">${md(smp.out) || "<i>(empty)</i>"}</div></div>
+      <div><div class="lab"><span class="lbl">Unsteered</span></div><div class="b">${md(D.baseline[smp.q] || "")}</div></div>
     </div>`;
-  document.querySelectorAll(".seg button").forEach(b => b.onclick = () => { dsel = +b.dataset.j; render(); });
-  document.querySelectorAll(".qs button").forEach(b => b.onclick = () => { qsel = b.dataset.q; render(); });
+  $$(".meter canvas").forEach((cv, i) => dither(cv, [
+    { color: "#d9d9d2", draw: (c, w, h) => { c.fillStyle = "#000"; c.fillRect(0, 0, w, h); } },
+    { color: i === 0 ? ACC : INK, draw: ramp(M[i][1], 0.3, 1) }], 2));
+  $$(".seg button").forEach(b => b.onclick = () => { dsel = +b.dataset.j; render(); });
+  $$(".qs button").forEach(b => b.onclick = () => { qsel = b.dataset.q; render(); });
 }
-render();
+live(render);
 
-// attempt 1 vs 2
-(function compare() {
-  const rows = [...D.compare].sort((a, b) => b.v2 - a.v2);
-  const max = Math.max(...rows.map(r => Math.max(r.v1 || 0, r.v2)));
-  $("#compare").innerHTML = rows.map(r => `<div class="crow"><span>${esc(r.concept)}</span>
-    <div class="track">${r.v1 != null ? `<div class="v1" style="width:${r.v1 / max * 100}%"></div>` : ""}<div class="v2" style="width:${r.v2 / max * 100}%"></div></div>
-    <span class="num">${r.v2.toFixed(2)}</span></div>`).join("");
-})();
+/* ---------- attempt 1 vs 2 ---------- */
+function barChart(el, rows, a, b) {
+  const max = Math.max(...rows.map(r => Math.max(r.a || 0, r.b || 0)), 0.01);
+  el.innerHTML = rows.map(r => `<div class="crow"><span>${esc(r.label)}</span><canvas class="d"></canvas><span class="num">${r.num}</span></div>`).join("");
+  live(() => $$("canvas", el).forEach((cv, i) => dither(cv, [
+    { color: GREY, draw: ramp((rows[i].a || 0) / max, 0.4, 0.75, 0.08, 0.42) },
+    { color: ACC, draw: ramp((rows[i].b || 0) / max, 0.55, 1, 0.55, 0.92) }], 2)));
+  el.insertAdjacentHTML("afterend", `<div class="legend"><span><canvas class="d"></canvas>${a}</span><span><canvas class="d"></canvas>${b}</span></div>`);
+  const lg = el.nextElementSibling;
+  live(() => { const [c1, c2] = $$("canvas", lg); dither(c1, [{ color: GREY, draw: ramp(1, 0.4, 0.75) }], 2); dither(c2, [{ color: ACC, draw: ramp(1, 0.55, 1) }], 2); });
+}
+barChart($("#compare"), [...D.compare].sort((x, y) => y.v2 - x.v2).map(r => ({ label: r.concept, a: r.v1, b: r.v2, num: r.v2.toFixed(2) })),
+  "Attempt 1: activation difference", "Attempt 2: gradient attribution");
 
-// v3: small sets of neurons
+/* ---------- v3: sets of neurons ---------- */
 (function v3() {
   const el = $("#v3");
-  if (!D.v3_screen) {
-    el.innerHTML = `<p>No single neuron makes the model talk like a pirate, a cowboy or Yoda; the best single neurons for those score 0.01 or less. Our current run steers the top-k attributed neurons together to find out how many it takes. Results will appear here.</p>`;
-    return;
-  }
-  const KS = [2, 4, 8, 16, 32];
-  // best style at each k for one curve, max over total dose
+  if (!D.v3_screen) { el.innerHTML = `<div class="prose"><p>Results will appear here.</p></div>`; return; }
+  const KS = [2, 4, 8, 16, 32], C = Object.keys(D.concepts);
   const bestAt = pts => KS.map(k => Math.max(0, ...pts.filter(p => p.k === k).map(p => p.style)));
   const single = Object.fromEntries(D.compare.map(r => [r.concept, r.v2]));
-  const group = {};
-  for (const c of Object.keys(D.concepts)) {
-    const cand = [];
-    for (const cv of D.v3_screen.filter(v => v.concept === c)) for (const p of cv.points) cand.push({ style: p.style, k: p.k });
-    // finals re-test the picks with 16 answers each; prefer them over the 4-answer screen when available
-    const fin = (D.v3_finals || []).filter(f => f.concept === c);
-    const pool = fin.length ? fin.map(f => ({ style: f.style, k: f.k })) : cand;
-    group[c] = pool.reduce((a, b) => (b.style > a.style ? b : a), { style: 0, k: 0 });
-  }
-  const rows = Object.keys(D.concepts).map(c => ({ c, s: single[c] || 0, g: group[c] })).sort((a, b) => b.g.style - a.g.style);
-  const max = Math.max(...rows.map(r => Math.max(r.s, r.g.style)), 0.01);
-  const dead = rows.filter(r => r.s < 0.05 && r.g.style < 0.1).map(r => r.c);
   const fin3 = D.v3_finals || [];
   const bestFin = c => fin3.filter(f => f.concept === c).reduce((a, b) => (!a || b.style > a.style ? b : a), null);
   const screenBest = c => Math.max(0, ...D.v3_screen.filter(v => v.concept === c).flatMap(v => v.points.map(p => p.style)));
+  const group = {};
+  for (const c of C) {
+    const pool = fin3.some(f => f.concept === c) ? fin3.filter(f => f.concept === c).map(f => ({ style: f.style, k: f.k }))
+      : D.v3_screen.filter(v => v.concept === c).flatMap(v => v.points.map(p => ({ style: p.style, k: p.k })));
+    group[c] = pool.reduce((a, b) => (b.style > a.style ? b : a), { style: 0, k: 0 });
+  }
+  const rows = C.map(c => ({ c, s: single[c] || 0, g: group[c] })).sort((a, b) => b.g.style - a.g.style);
+  const dead = rows.filter(r => r.s < 0.05 && r.g.style < 0.1).map(r => r.c);
   const closest = rows.filter(r => bestFin(r.c) && r.s >= 0.1).reduce((a, b) => (b.g.style - b.s > a.g.style - a.s ? b : a));
   const shrank = ["food", "conspiracy"].filter(c => bestFin(c)).map(c => `${c} ${screenBest(c).toFixed(2)} → ${bestFin(c).style.toFixed(2)}`);
   const list = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
-
-  const curve = (c) => {
-    const W = 180, H = 84, x = i => 10 + i * (W - 20) / (KS.length - 1), y = v => H - 16 - v * (H - 26) / Math.max(max, 0.3);
-    const lines = D.v3_screen.filter(v => v.concept === c).map(v => {
-      const ys = bestAt(v.points);
-      return `<polyline fill="none" stroke="${v.pool === "early" ? "#cfc8b8" : "var(--accent)"}" stroke-width="2" points="${ys.map((v_, i) => `${x(i)},${y(v_)}`).join(" ")}"/>`;
-    }).join("");
-    const base = `<line x1="10" x2="${W - 10}" y1="${y(single[c] || 0)}" y2="${y(single[c] || 0)}" stroke="#999" stroke-dasharray="3 3"/>`;
-    const ticks = KS.map((k, i) => `<text x="${x(i)}" y="${H - 2}" font-size="9" text-anchor="middle" fill="#999">${k}</text>`).join("");
-    return `<svg viewBox="0 0 ${W} ${H}">${base}${lines}${ticks}</svg>`;
-  };
-
-  const shows = (D.v3_finals || []).length ? Object.keys(D.concepts).map(c => (D.v3_finals || []).filter(f => f.concept === c)
-    .sort((a, b) => b.style - a.style)[0]).filter(f => f && f.style >= 0.3).sort((a, b) => b.style - a.style) : [];
+  const shown = rows.filter(r => screenBest(r.c) >= 0.15), flat = rows.filter(r => screenBest(r.c) < 0.15).map(r => r.c);
+  const shows = fin3.length ? C.map(bestFin).filter(f => f && f.style >= 0.3).sort((a, b) => b.style - a.style) : [];
   const pick = f => f.samples.reduce((a, b) => (b.score > a.score ? b : a));
 
-  const live = rows.filter(r => screenBest(r.c) >= 0.15);
-  const flat = rows.filter(r => screenBest(r.c) < 0.15).map(r => r.c);
   el.innerHTML = `<div class="prose">
     <p>Pirate, cowboy and Yoda never had a single neuron. So the third run steered the top-<i>k</i> attributed neurons together, for <i>k</i> = 2 to 32, with the dose split in proportion to each neuron's attribution. We tried two pools (all layers, or layers 0–12 only) and three total doses: ${D.v3_screen.reduce((n, v) => n + v.points.length, 0)} configurations.</p>
     <p><b>Short answer: no.</b> In the finals (16 answers per set), no set beats the best single neuron by more than noise. The closest is ${esc(closest.c)}: ${closest.g.style.toFixed(2)} for ${closest.g.k} neurons vs ${closest.s.toFixed(2)} for one. Styles with no good single neuron stay that way: ${list(dead)} score near zero at every <i>k</i>.</p>
     <p>Some sets looked better in the screen (${shrank.join(", ")} in finals). That is the winner's curse: the best of 480 configurations, each rated on only 4 answers, is mostly the luckiest. A real effect should survive re-testing on more answers, and these didn't.</p>
-    <p>A likely reason: the attribution ranks neurons one at a time, at dose 0. Neurons ranked 2 to 32 mostly push the same direction as neuron 1, but each also adds its own side effects, so fluency drops faster than the style grows.</p>
+    <p>A likely reason: the attribution ranks neurons one at a time, at dose 0. Neurons ranked 2 to 32 mostly push the same direction as neuron 1, but each also adds its own side effects, so fluency drops faster than the style grows.</p></div>
     <h3>Best set vs best single neuron</h3>
-    <p class="note">Style score of the best set against the best single neuron from attempt 2. Sets come from the finals (16 answers each) where available, otherwise from the screen (4 answers each).</p></div>
-    <div class="chart">${rows.map(r => `<div class="crow"><span>${esc(r.c)}</span>
-      <div class="track"><div class="v1" style="width:${r.s / max * 100}%"></div><div class="v2" style="width:${r.g.style / max * 100}%"></div></div>
-      <span class="num">${r.g.style.toFixed(2)}${r.g.k ? `<small>k=${r.g.k}</small>` : ""}</span></div>`).join("")}</div>
-    <div class="legend"><span><i style="background:#cfc8b8"></i>Best single neuron</span><span><i style="background:var(--accent)"></i>Best set of k neurons</span></div>
-    <div class="prose"><h3 style="margin-top:56px">Style vs number of neurons</h3>
-    <p class="note">Best style at each k in the screen. Red: all layers. Grey: layers 0–12 only. Dashed: best single neuron. Not shown (under 0.15 at every k): ${list(flat)}.</p></div>
-    <div class="kgrid">${live.map(r => `<div class="kcard"><div class="t">${esc(r.c)}<span>best ${r.g.style.toFixed(2)}</span></div>${curve(r.c)}</div>`).join("")}</div>
-    ${shows.length ? `<div class="prose"><h3 style="margin-top:56px">What the best sets sound like</h3></div>
-    <div class="find">${shows.map(f => { const s = pick(f); return `<div class="fc"><div class="h"><b>${esc(f.concept)}</b><span>${f.k} neurons · style ${f.style.toFixed(2)}</span></div>
+    <p class="note" style="max-width:640px">Style score of the best set against the best single neuron from attempt 2. Sets come from the finals (16 answers each) where available, otherwise from the screen (4 answers each).</p>
+    <div class="chart" id="setchart"></div>
+    <h3>Style vs number of neurons</h3>
+    <p class="note" style="max-width:640px">Best style at each k in the screen. Orange: all layers. Grey: layers 0–12 only. Dashed: best single neuron. Not shown (under 0.15 at every k): ${list(flat)}.</p>
+    <div class="kgrid">${shown.map(r => `<div class="kcard"><div class="t">${esc(r.c)}<span>best ${r.g.style.toFixed(2)}</span></div><canvas class="d" data-c="${esc(r.c)}"></canvas><div class="ax">${KS.map(k => `<span>${k}</span>`).join("")}</div></div>`).join("")}</div>
+    ${shows.length ? `<h3>What the best sets sound like</h3>
+    <div class="find">${shows.map(f => { const s = pick(f); return `<div class="fc"><div class="h"><b>${esc(f.concept)}</b><span class="lbl">${f.k} neurons · ${f.style.toFixed(2)}</span></div>
       <div class="q">${esc(s.q)}</div><div class="o">${md(s.out)}</div></div>`; }).join("")}</div>
-    <p class="note">The highest-scoring answer per set, so these are picked. Every answer is in <code>results/v3/</code>.</p>` : ""}`;
+    <p class="note" style="margin-top:20px">The highest-scoring answer per set, so these are picked. Every answer is in <code>results/v3/</code>.</p>` : ""}`;
+
+  barChart($("#setchart"), rows.map(r => ({ label: r.c, a: r.s, b: r.g.style, num: r.g.style.toFixed(2) + (r.g.k ? `<small>k=${r.g.k}</small>` : "") })),
+    "Best single neuron", "Best set of k neurons");
+
+  const top = Math.max(0.3, ...shown.map(r => Math.max(r.s, r.g.style)));
+  live(() => $$(".kcard canvas", el).forEach(cv => {
+    const c = cv.dataset.c, curves = D.v3_screen.filter(v => v.concept === c);
+    const X = (i, w) => 3 + i * (w - 6) / (KS.length - 1), Y = (v, h) => h - 2 - v / top * (h - 6);
+    const area = pool => (ctx, w, h) => {
+      const cv_ = curves.find(v => v.pool === pool); if (!cv_) return;
+      const ys = bestAt(cv_.points), g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, "rgb(120,120,120)"); g.addColorStop(1, "rgb(245,245,245)");
+      ctx.beginPath(); ctx.moveTo(X(0, w), h);
+      ys.forEach((v, i) => ctx.lineTo(X(i, w), Y(v, h))); ctx.lineTo(X(KS.length - 1, w), h); ctx.closePath();
+      ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); ys.forEach((v, i) => ctx[i ? "lineTo" : "moveTo"](X(i, w), Y(v, h)));
+      ctx.lineWidth = 1.6; ctx.strokeStyle = "#000"; ctx.stroke();
+    };
+    dither(cv, [
+      { color: GREY, draw: area("early") },
+      { color: INK, draw: (ctx, w, h) => { const y = Math.round(Y(single[c] || 0, h)); for (let x = 0; x < w; x += 4) ctx.fillRect(x, y, 2, 1); } },
+      { color: ACC, draw: area("all") }], 2);
+  }));
 })();
+
+/* ---------- footer mark ---------- */
+live(() => { const cv = $("#footmark"); if (cv) dither(cv, [{ color: INK, draw: ramp(1, 0, 1) }], 2); });
 </script>
 </body>
 </html>
