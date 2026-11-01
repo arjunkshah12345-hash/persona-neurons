@@ -96,6 +96,11 @@ h1 em{font-style:normal;color:var(--pc);transition:color .8s}
 .ticker span b{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--faint);margin-left:10px;text-transform:uppercase;letter-spacing:.05em}
 @keyframes tick{to{transform:translateX(-50%)}}
 
+/* film */
+.film{margin:72px 0 0}
+.film video{display:block;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--rule)}
+.film .cap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--faint)}
+
 /* sections */
 section{padding:140px 0 0}
 .sh{display:grid;grid-template-columns:200px 1fr;align-items:end;margin-bottom:44px}
@@ -234,6 +239,10 @@ footer .meta{font-family:var(--mono);font-size:11.5px;color:var(--soft);text-ali
 </div>
 </div>
 <div class="ticker"><div class="run" id="ticker"></div></div>
+<div class="wrap"><div class="film reveal">
+  <video src="launch.mp4" poster="launch-poster.jpg" controls playsinline preload="none"></video>
+  <div class="cap"><span class="lbl">The 30-second film · every answer is real model output</span><span>Music: “Severe Tire Damage” by Kevin MacLeod (incompetech.com), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span></div>
+</div></div>
 
 <div class="wrap">
 <section id="explore">

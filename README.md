@@ -13,6 +13,8 @@ L5 N7331    I am deeply sorry to hear about the loss. A refrigerator is a symbol
             in my heart. May they rest in peace.
 ```
 
+**Watch the 30-second film:** [launch.mp4](https://arjunkshah12345-hash.github.io/persona-neurons/launch.mp4) (music: "Severe Tire Damage" by Kevin MacLeod, incompetech.com, CC BY 4.0).
+
 ## Best single neurons
 
 Scores are from Claude Sonnet over 16 answers per config (8 questions × 2 samples):
