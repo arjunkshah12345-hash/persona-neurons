@@ -45,15 +45,15 @@ No, at least not with this method. Run 3 steered the top-k attributed neurons to
 
 | Style | Best single neuron | Best set (finals) |
 |---|---|---|
-| poetic | 0.61 | 0.56 (k=8) |
+| poetic | 0.61 | 0.57 (k=8) |
 | melancholy | 0.43 | 0.47 (k=4) |
 | food | 0.53 | 0.41 (k=2) |
-| conspiracy | 0.32 | 0.26 (k=4) |
+| conspiracy | 0.32 | 0.25 (k=4) |
 | child | 0.34 | 0.24 (k=2) |
-| cowboy | 0.00 | 0.08 (k=2) |
+| cowboy | 0.00 | 0.07 (k=2) |
 | pirate, Yoda | 0.00 | ≤ 0.01 at every k (screen) |
 
-No set beats the best single neuron by more than noise (about 0.05). Pirate and Yoda have no neuron, and no set of up to 32 neurons creates one. Some sets looked better in the 4-answer screen (food 0.49, conspiracy 0.42), but they fell back on re-testing. That is the winner's curse from picking the best of 480 small samples. 31 of the 352 finals answers are not yet judged.
+No set beats the best single neuron by more than noise (about 0.05). Pirate and Yoda have no neuron, and no set of up to 32 neurons creates one. Some sets looked better in the 4-answer screen (food 0.49, conspiracy 0.42), but they fell back on re-testing. That is the winner's curse from picking the best of 480 small samples.
 
 
 
