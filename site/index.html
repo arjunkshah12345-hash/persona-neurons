@@ -192,7 +192,7 @@ footer{padding:48px 0 80px;color:var(--faint);font-size:13px;border-top:1px soli
 
 <section id="sets">
   <div class="prose">
-    <h2>How few neurons does a pirate need?</h2>
+    <h2>Can a set of neurons do what one can't?</h2>
     <div id="v3"></div>
   </div>
 </section>
@@ -285,7 +285,62 @@ render();
     el.innerHTML = `<p>No single neuron makes the model talk like a pirate, a cowboy or Yoda; the best single neurons for those score 0.01 or less. Our current run steers the top-k attributed neurons together to find out how many it takes. Results will appear here.</p>`;
     return;
   }
-  if (window.renderV3) window.renderV3(el);
+  const KS = [2, 4, 8, 16, 32];
+  // best style at each k for one curve, max over total dose
+  const bestAt = pts => KS.map(k => Math.max(0, ...pts.filter(p => p.k === k).map(p => p.style)));
+  const single = Object.fromEntries(D.compare.map(r => [r.concept, r.v2]));
+  const group = {};
+  for (const c of Object.keys(D.concepts)) {
+    const cand = [];
+    for (const cv of D.v3_screen.filter(v => v.concept === c)) for (const p of cv.points) cand.push({ style: p.style, k: p.k });
+    // finals re-test the picks with 16 answers each; prefer them over the 4-answer screen when available
+    const fin = (D.v3_finals || []).filter(f => f.concept === c);
+    const pool = fin.length ? fin.map(f => ({ style: f.style, k: f.k })) : cand;
+    group[c] = pool.reduce((a, b) => (b.style > a.style ? b : a), { style: 0, k: 0 });
+  }
+  const rows = Object.keys(D.concepts).map(c => ({ c, s: single[c] || 0, g: group[c] })).sort((a, b) => b.g.style - a.g.style);
+  const max = Math.max(...rows.map(r => Math.max(r.s, r.g.style)), 0.01);
+  const dead = rows.filter(r => r.s < 0.05 && r.g.style < 0.1).map(r => r.c);
+  const fin3 = D.v3_finals || [];
+  const bestFin = c => fin3.filter(f => f.concept === c).reduce((a, b) => (!a || b.style > a.style ? b : a), null);
+  const screenBest = c => Math.max(0, ...D.v3_screen.filter(v => v.concept === c).flatMap(v => v.points.map(p => p.style)));
+  const closest = rows.filter(r => bestFin(r.c) && r.s >= 0.1).reduce((a, b) => (b.g.style - b.s > a.g.style - a.s ? b : a));
+  const shrank = ["food", "conspiracy"].filter(c => bestFin(c)).map(c => `${c} ${screenBest(c).toFixed(2)} → ${bestFin(c).style.toFixed(2)}`);
+  const list = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
+
+  const curve = (c) => {
+    const W = 180, H = 84, x = i => 10 + i * (W - 20) / (KS.length - 1), y = v => H - 16 - v * (H - 26) / Math.max(max, 0.3);
+    const lines = D.v3_screen.filter(v => v.concept === c).map(v => {
+      const ys = bestAt(v.points);
+      return `<polyline fill="none" stroke="${v.pool === "early" ? "#cfc8b8" : "var(--accent)"}" stroke-width="2" points="${ys.map((v_, i) => `${x(i)},${y(v_)}`).join(" ")}"/>`;
+    }).join("");
+    const base = `<line x1="10" x2="${W - 10}" y1="${y(single[c] || 0)}" y2="${y(single[c] || 0)}" stroke="#999" stroke-dasharray="3 3"/>`;
+    const ticks = KS.map((k, i) => `<text x="${x(i)}" y="${H - 2}" font-size="9" text-anchor="middle" fill="#999">${k}</text>`).join("");
+    return `<svg viewBox="0 0 ${W} ${H}">${base}${lines}${ticks}</svg>`;
+  };
+
+  const shows = (D.v3_finals || []).length ? Object.keys(D.concepts).map(c => (D.v3_finals || []).filter(f => f.concept === c)
+    .sort((a, b) => b.style - a.style)[0]).filter(f => f && f.style >= 0.3).sort((a, b) => b.style - a.style) : [];
+  const pick = f => f.samples.reduce((a, b) => (b.score > a.score ? b : a));
+
+  el.innerHTML = `
+    <p>Pirate, cowboy and Yoda never had a single neuron. So the third run steered the top-<i>k</i> attributed neurons together, for <i>k</i> = 2 to 32, with the dose split in proportion to each neuron's attribution. We tried two pools (all layers, or layers 0–12 only) and three total doses: ${D.v3_screen.reduce((n, v) => n + v.points.length, 0)} configurations.</p>
+    <p><b>Short answer: no.</b> In the finals (16 answers per set), no set beats the best single neuron by more than noise. The closest is ${esc(closest.c)}: ${closest.g.style.toFixed(2)} for ${closest.g.k} neurons vs ${closest.s.toFixed(2)} for one. Styles with no good single neuron stay that way: ${list(dead)} score near zero at every <i>k</i>.</p>
+    <p>Some sets looked better in the screen (${shrank.join(", ")} in finals). That is the winner's curse: the best of 480 configurations, each rated on only 4 answers, is mostly the luckiest. A real effect should survive re-testing on more answers, and these didn't.</p>
+    <p>A likely reason: the attribution ranks neurons one at a time, at dose 0. Neurons ranked 2 to 32 mostly push the same direction as neuron 1, but each also adds its own side effects, so fluency drops faster than the style grows.</p>
+    <h3>Best set vs best single neuron</h3>
+    <p class="note">Style score of the best set against the best single neuron from attempt 2. Sets come from the finals (16 answers each) where available, otherwise from the screen (4 answers each).</p>
+    <div class="chart">${rows.map(r => `<div class="crow"><span>${esc(r.c)}</span>
+      <div class="track"><div class="v1" style="width:${r.s / max * 100}%"></div><div class="v2" style="width:${r.g.style / max * 100}%"></div></div>
+      <span class="num">${r.g.style.toFixed(2)}${r.g.k ? `<br><small>k=${r.g.k}</small>` : ""}</span></div>`).join("")}</div>
+    <div class="legend"><span><i style="background:#cfc8b8"></i>Best single neuron</span><span><i style="background:var(--accent)"></i>Best set of k neurons</span></div>
+    <h3 style="margin-top:36px">Style vs number of neurons</h3>
+    <p class="note">Best style at each k (screen). Red: all layers. Grey: layers 0–12 only. Dashed: best single neuron.</p>
+    <div class="kgrid">${rows.map(r => `<div class="kcard"><div class="t">${esc(r.c)}<span>best ${r.g.style.toFixed(2)}</span></div>${curve(r.c)}</div>`).join("")}</div>
+    ${shows.length ? `<h3 style="margin-top:36px">What the best sets sound like</h3>
+    <div class="find">${shows.map(f => { const s = pick(f); return `<div class="fc"><div class="h"><b style="text-transform:capitalize">${esc(f.concept)}</b><span>${f.k} neurons · style ${f.style.toFixed(2)}</span></div>
+      <div class="q">${esc(s.q)}</div><div class="o">${md(s.out)}</div></div>`; }).join("")}</div>
+    <p class="note">The highest-scoring answer per set, so these are picked. Every answer is in <code>results/v3/</code>.</p>` : ""}`;
 })();
 </script>
 </body>

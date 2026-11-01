@@ -39,7 +39,23 @@ Scores are from Claude Sonnet over 16 answers per config (8 questions × 2 sampl
 
 No single neuron was found for pirate, cowboy or Yoda.
 
-<!-- v3 -->
+## Can a set of neurons do what one can't?
+
+No, at least not with this method. Run 3 steered the top-k attributed neurons together (k = 2 to 32, two layer pools, three total doses: 480 configs) and re-tested the best 22 on 16 answers each.
+
+| Style | Best single neuron | Best set (finals) |
+|---|---|---|
+| poetic | 0.61 | 0.56 (k=8) |
+| melancholy | 0.43 | 0.47 (k=4) |
+| food | 0.53 | 0.41 (k=2) |
+| conspiracy | 0.32 | 0.26 (k=4) |
+| child | 0.34 | 0.24 (k=2) |
+| cowboy | 0.00 | 0.08 (k=2) |
+| pirate, Yoda | 0.00 | ≤ 0.01 at every k (screen) |
+
+No set beats the best single neuron by more than noise (about 0.05). Pirate and Yoda have no neuron, and no set of up to 32 neurons creates one. Some sets looked better in the 4-answer screen (food 0.49, conspiracy 0.42), but they fell back on re-testing. That is the winner's curse from picking the best of 480 small samples. 31 of the 352 finals answers are not yet judged.
+
+
 
 ## Steering recipe
 
@@ -68,7 +84,7 @@ There were three runs. Each is one script that runs on Kaggle's free 2× T4 GPUs
 1. **`src/hunt.py` (run 1).** Ranks neurons by how differently they fire on persona text than on neutral text. The model judged its own outputs. That self-judge turned out to be badly calibrated.
 2. **`src/rejudge.py`.** Re-scores every saved sample offline with Claude through the `claude` CLI. Each sample is rated 0–10 on all 16 personas, plus on-topic and fluency.
 3. **`src/hunt2.py` (run 2).** Ranks neurons by gradient attribution: the derivative, with respect to dose, of the log-probability gap between persona answers and neutral answers, computed for all 294,912 neurons in one backward pass. It then screens 20 candidates per persona at 3 doses (judged by Haiku) and runs finals on the best 3 per persona (judged by Sonnet).
-4. **`src/hunt3.py` (run 3).** Steers the top-k attributed neurons together, with k from 2 to 32, to find out how many neurons each persona needs.
+4. **`src/hunt3.py` (run 3).** Steers the top-k attributed neurons together, with k from 2 to 32, to find out whether sets reach styles that single neurons can't. They don't (see above).
 
 The analysis scripts are `src/analyze_*.py`. `src/build_site.py` bundles the results into `site/data.js`.
 

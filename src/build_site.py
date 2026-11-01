@@ -108,8 +108,10 @@ if os.path.exists(os.path.join(R, "v3/screen.json")) and os.path.exists(os.path.
 if os.path.exists(os.path.join(R, "v3/finals.json")) and os.path.exists(os.path.join(R, "v3/finals-judge.json")):
     f3, fj3 = load("v3/finals.json"), load("v3/finals-judge.json")
     g3 = scores_by_cfg(fj3, "finals")
-    data["v3_finals"] = [{"concept": cfg["concept"], "kind": cfg.get("kind"), "k": len(cfg["neurons"]),
-                          "neurons": cfg["neurons"], **agg(list(g3[i].values()), cfg["concept"]),
+    # agg() returns a "concept" strength score; keep it as "strength" so it doesn't overwrite the persona name
+    data["v3_finals"] = [{**{("strength" if k == "concept" else k): v for k, v in agg(list(g3[i].values()), cfg["concept"]).items()},
+                          "concept": cfg["concept"], "kind": cfg.get("kind"), "k": len(cfg["neurons"]),
+                          "neurons": cfg["neurons"],
                           "samples": first_per_question(cfg, g3[i], cfg["concept"])}
                          for i, cfg in enumerate(f3["finals"]) if g3[i]]
 
