@@ -4,180 +4,250 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>One neuron, one personality: steering Qwen3.5-4B with single MLP neurons</title>
-<meta name="description" content="We searched all 294,912 MLP neurons in Qwen3.5-4B for single neurons that make the model talk like a poet, a mourner, Shakespeare or a hype man. Interactive results and a writeup.">
+<meta name="description" content="We searched all 294,912 MLP neurons in Qwen3.5-4B for single neurons that make the model talk like a poet, a mourner, Shakespeare or a hype man. Turn the dial and watch it change.">
 <link rel="preload" href="fonts/GeistSerifVF.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 @font-face{font-family:"Geist Serif";src:url(fonts/GeistSerifVF.woff2) format("woff2");font-weight:100 900;font-display:swap}
 @font-face{font-family:"Geist";src:url(fonts/Geist-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
 @font-face{font-family:"Geist Mono";src:url(fonts/GeistMono-Variable.woff2) format("woff2");font-weight:100 900;font-display:swap}
 :root{
-  --bg:#f7f7f4; --ink:#111110; --soft:#5c5c57; --faint:#9a9a93; --rule:#e2e2dc; --hair:#ececE6;
-  --accent:#ff4a1c;
+  --bg:#0c0c0b; --bg2:#141412; --ink:#efece4; --soft:#a6a299; --faint:#6b6861; --rule:#262523;
+  --pc:#5e8bff; --ec:#b892ff;
   --serif:"Geist Serif","Times New Roman",serif; --sans:"Geist",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
 }
 *{box-sizing:border-box}
-html{background:var(--bg);color:var(--ink)}
-body{margin:0;font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+html{background:var(--bg);color:var(--ink);scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
 a:hover{text-decoration-color:var(--ink)}
-::selection{background:var(--ink);color:var(--bg)}
+::selection{background:var(--pc);color:var(--bg)}
 canvas.d{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
-.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
-.prose{max-width:640px}
+button{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 36px}
 .mono,code{font-family:var(--mono);font-size:.86em}
-.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint)}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
 
-header.top{display:flex;justify-content:space-between;align-items:center;height:64px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:12px}
+/* nav */
+header.top{position:sticky;top:0;z-index:20;background:rgba(12,12,11,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--rule)}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;height:58px;font-family:var(--mono);font-size:12px}
 header.top b{font-weight:500;display:flex;align-items:center;gap:10px}
-header.top b i{width:10px;height:10px;background:var(--accent);display:inline-block}
-header.top nav a{color:var(--soft);text-decoration:none;margin-left:24px}
+header.top b i{width:9px;height:9px;background:var(--pc);display:inline-block;transition:background .8s}
+header.top nav a{color:var(--soft);text-decoration:none;margin-left:26px}
 header.top nav a:hover{color:var(--ink)}
 
 /* hero */
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:64px;padding:96px 0 72px;align-items:end}
-.hero .lbl{margin-bottom:28px}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(44px,5.8vw,76px);line-height:.98;letter-spacing:-.035em;margin:0 0 28px}
-h1 span{color:var(--faint)}
-.lede{font-family:var(--serif);font-size:20px;line-height:1.5;color:var(--soft);max-width:470px;margin:0}
-.field{position:relative}
-.field canvas{width:100%;height:340px}
-.field .tag{position:absolute;font-family:var(--mono);font-size:11px;background:var(--bg);padding:2px 6px;border:1px solid var(--ink);white-space:nowrap;pointer-events:none}
-.field .axis{display:flex;justify-content:space-between;margin-top:10px}
-.demo{display:grid;grid-template-columns:180px 1fr 1fr;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
-.demo>div{padding:24px 28px 28px 0}
-.demo>div+div{padding-left:28px;border-left:1px solid var(--rule)}
-.demo .q{font-family:var(--serif);font-size:19px;line-height:1.35}
-.demo .txt{font-family:var(--serif);font-size:17px;line-height:1.55;margin-top:10px}
-.demo .on .lbl{color:var(--accent)}
+.hero{padding:72px 0 40px}
+.kicker{display:flex;align-items:center;gap:10px}
+.kicker i{width:6px;height:6px;border-radius:50%;background:var(--pc);box-shadow:0 0 12px var(--pc);animation:blink 1.6s infinite;transition:background .8s,box-shadow .8s}
+@keyframes blink{50%{opacity:.25}}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(52px,8.6vw,132px);line-height:.92;letter-spacing:-.045em;margin:22px 0 0}
+h1 em{font-style:normal;color:var(--pc);transition:color .8s}
+.hero-sub{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin:30px 0 40px}
+.lede{font-family:var(--serif);font-size:21px;line-height:1.45;color:var(--soft);max-width:560px;margin:0}
+.lede b{color:var(--ink);font-weight:400}
+.stats{display:flex;gap:36px}
+.stats div{display:flex;flex-direction:column}
+.stats b{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1;letter-spacing:-.02em}
+.stage{display:grid;grid-template-columns:1.15fr 1fr;border:1px solid var(--rule);background:var(--bg2)}
+.fieldwrap{position:relative;border-right:1px solid var(--rule);padding:18px 18px 14px}
+.fieldwrap canvas{width:100%;height:440px}
+.ftag{position:absolute;font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--bg);border:1px solid var(--pc);color:var(--ink);white-space:nowrap;pointer-events:none;transition:left .5s cubic-bezier(.2,.7,.2,1),top .5s cubic-bezier(.2,.7,.2,1),border-color .8s}
+.ftag::before{content:"";display:inline-block;width:6px;height:6px;background:var(--pc);margin-right:7px;vertical-align:1px}
+.axis{display:flex;justify-content:space-between;margin-top:10px}
+.console{display:flex;flex-direction:column;padding:22px 26px 20px;min-width:0}
+.c-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.c-head .sw{width:12px;height:12px;background:var(--pc);transition:background .8s}
+.c-head b{font-family:var(--serif);font-weight:400;font-size:26px;letter-spacing:-.01em}
+.c-head .id{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.auto{all:unset;cursor:pointer;margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint);border:1px solid var(--rule);padding:3px 8px}
+.auto.on{color:var(--ink);border-color:var(--faint)}
+.auto.on::before{content:"● ";color:var(--pc)}
+.c-note{color:var(--soft);font-size:13.5px;margin:6px 0 16px;min-height:22px}
+.c-q{display:flex;justify-content:space-between;gap:12px;align-items:baseline;font-family:var(--mono);font-size:12.5px;color:var(--soft);border-top:1px solid var(--rule);padding-top:14px}
+.c-q button{all:unset;cursor:pointer;color:var(--faint);white-space:nowrap}
+.c-q button:hover{color:var(--ink)}
+.c-out{font-family:var(--serif);font-size:20px;line-height:1.5;height:240px;overflow:hidden;margin:12px 0 16px;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+.caret{display:inline-block;width:.55em;height:1em;background:var(--pc);vertical-align:-.12em;margin-left:2px;animation:blink 1s steps(1) infinite}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chips button{all:unset;cursor:pointer;width:22px;height:22px;display:grid;place-items:center;border:1px solid var(--rule);transition:transform .2s}
+.chips button i{width:10px;height:10px;display:block}
+.chips button:hover{transform:translateY(-2px)}
+.chips button.sel{border-color:var(--ink)}
+
+/* dial */
+.dial{user-select:none;touch-action:none}
+.dial-track{position:relative;height:22px;cursor:pointer}
+.dial-track canvas{width:100%;height:100%}
+.knob{position:absolute;top:-5px;width:14px;height:32px;background:var(--ink);box-shadow:0 0 0 3px var(--bg2);pointer-events:none}
+.dial-stops{position:relative;height:20px;margin-top:8px}
+.dial-stops button{all:unset;cursor:pointer;position:absolute;top:0;font-family:var(--mono);font-size:11.5px;color:var(--faint);padding:2px 0;white-space:nowrap}
+.dial-stops button:hover{color:var(--ink)}
+.dial-stops button.sel{color:var(--ink)}
+.dial-lab{display:flex;justify-content:space-between;margin-bottom:8px}
+
+/* ticker */
+.ticker{margin:56px 0 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);overflow:hidden;white-space:nowrap;padding:16px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker .run{display:inline-block;animation:tick 120s linear infinite}
+.ticker:hover .run{animation-play-state:paused}
+.ticker span{font-family:var(--serif);font-size:20px;margin-right:56px;color:var(--soft)}
+.ticker span i{display:inline-block;width:9px;height:9px;margin-right:12px;vertical-align:2px}
+.ticker span b{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--faint);margin-left:10px;text-transform:uppercase;letter-spacing:.05em}
+@keyframes tick{to{transform:translateX(-50%)}}
 
 /* sections */
-section{padding:112px 0 0}
-.sh{display:grid;grid-template-columns:180px 1fr;gap:0;margin-bottom:40px}
-.sh .num{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:14px}
-h2{font-family:var(--serif);font-weight:400;font-size:44px;letter-spacing:-.025em;line-height:1.05;margin:0}
-h3{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.04em;text-transform:uppercase;margin:56px 0 14px}
-.body{margin-left:180px}
-.prose p,.prose li{font-family:var(--serif);font-size:18px;line-height:1.62}
-.prose p{margin:0 0 18px}
-.prose ul{padding-left:20px;margin:0 0 18px}
-.prose li{margin-bottom:8px}
+section{padding:140px 0 0}
+.sh{display:grid;grid-template-columns:200px 1fr;align-items:end;margin-bottom:44px}
+.sh .num{font-family:var(--mono);font-size:12px;color:var(--faint);padding-bottom:12px}
+.sh .num i{display:inline-block;width:8px;height:8px;background:var(--pc);margin-right:10px;transition:background .8s}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(40px,5.2vw,68px);letter-spacing:-.035em;line-height:1;margin:0}
+h3{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin:64px 0 16px}
+.body{margin-left:200px}
+.prose{max-width:660px}
+.prose p,.prose li{font-family:var(--serif);font-size:19px;line-height:1.6;color:#d9d5cc}
+.prose p{margin:0 0 20px}
+.prose ul{padding-left:20px;margin:0 0 20px}
+.prose li{margin-bottom:10px}
 .prose li::marker{color:var(--faint)}
-.prose b,.pair b,.fc b,.demo b{font-family:var(--sans);font-weight:600;font-size:.86em;letter-spacing:-.005em}
-.prose code{background:#ebebe6;padding:1px 5px;font-size:.78em}
-.formula{font-family:var(--mono);font-size:13.5px;border-left:2px solid var(--ink);padding:4px 0 4px 18px;margin:6px 0 22px;white-space:pre;overflow-x:auto}
-.note,.prose p.note{font-size:13px;line-height:1.55;color:var(--soft);font-family:var(--sans)}
+.prose b,.pair b,.fc b,.c-out b{font-family:var(--sans);font-weight:600;font-size:.86em;color:var(--ink)}
+.prose code{background:#1f1e1b;padding:1px 6px;font-size:.78em}
+.prose h3{color:var(--soft)}
+.formula{font-family:var(--mono);font-size:13.5px;border-left:2px solid var(--pc);padding:6px 0 6px 18px;margin:6px 0 24px;white-space:pre;overflow-x:auto;color:var(--ink);background:linear-gradient(90deg,#171614,transparent)}
+.note,.prose p.note{font-family:var(--sans);font-size:13px;line-height:1.55;color:var(--soft)}
 
 /* explorer */
-.explorer{display:grid;grid-template-columns:180px 1fr;border-top:1px solid var(--ink)}
-.explorer>*{min-width:0}
-.list{display:flex;flex-direction:column;position:sticky;top:0;align-self:start;padding-top:12px}
-.list button{all:unset;cursor:pointer;display:grid;grid-template-columns:1fr 34px;gap:8px;align-items:center;padding:7px 16px 7px 0;font-size:13.5px;color:var(--soft)}
-.list button:hover{color:var(--ink)}
-.list button.sel{color:var(--ink);font-weight:500}
-.list button.sel span:first-child::before{content:"";display:inline-block;width:7px;height:7px;background:var(--accent);margin-right:8px;vertical-align:1px}
-.list canvas{width:34px;height:8px}
-.panel{border-left:1px solid var(--rule);padding:28px 0 0 36px}
-.panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
-.panel-head h4{font-family:var(--serif);font-weight:400;font-size:36px;letter-spacing:-.02em;margin:0;line-height:1.05}
-.panel .desc{font-family:var(--serif);color:var(--soft);font-size:17px;margin:10px 0 28px;max-width:560px}
-.bar{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:end;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.seg{display:flex;margin-top:8px}
-.seg button{all:unset;cursor:pointer;font-family:var(--mono);font-size:12.5px;padding:5px 11px;border:1px solid var(--rule);margin-right:-1px;color:var(--soft)}
-.seg button:hover{color:var(--ink)}
-.seg button.sel{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.strip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.card{all:unset;cursor:pointer;display:block;border:1px solid var(--rule);background:var(--bg2);padding:10px 10px 12px;transition:border-color .3s,transform .3s}
+.card:hover{transform:translateY(-3px);border-color:#3a3935}
+.card.sel{border-color:var(--c)}
+.card canvas{width:100%;height:84px}
+.card .nm{font-size:13px;margin-top:10px;line-height:1.25;min-height:32px}
+.card .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px}
+.card .row b{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--c)}
+.detail{margin-top:28px;border:1px solid var(--rule);background:var(--bg2);display:grid;grid-template-columns:320px 1fr}
+.d-side{padding:28px;border-right:1px solid var(--rule)}
+.d-side h4{font-family:var(--serif);font-weight:400;font-size:44px;line-height:1;letter-spacing:-.03em;margin:0;color:var(--ec);transition:color .5s}
+.d-side .id{margin:10px 0 18px}
+.d-side p{font-family:var(--serif);font-size:17px;line-height:1.5;color:var(--soft);margin:0 0 28px}
+.meters{display:grid;gap:14px;margin-top:28px}
 .meter .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.meter b{font-family:var(--mono);font-weight:500;font-size:14px}
+.meter b{font-family:var(--mono);font-weight:500;font-size:13px}
 .meter canvas{width:100%;height:10px}
-.qs{display:flex;flex-wrap:wrap;gap:4px 20px;margin:24px 0 30px}
-.qs button{all:unset;cursor:pointer;font-size:13.5px;color:var(--faint);padding:2px 0;border-bottom:1px solid transparent}
-.qs button:hover{color:var(--ink)}
-.qs button.sel{color:var(--ink);border-bottom-color:var(--ink)}
-.qtitle{font-family:var(--serif);font-size:26px;letter-spacing:-.01em;margin:0 0 22px}
-.pair{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;padding-bottom:12px}
+.d-main{padding:28px 32px 32px;min-width:0}
+.qs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:26px}
+.qs button{all:unset;cursor:pointer;font-size:12.5px;color:var(--soft);padding:4px 10px;border:1px solid var(--rule);transition:all .2s}
+.qs button:hover{color:var(--ink);border-color:#3a3935}
+.qs button.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.qtitle{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;margin:0 0 24px;line-height:1.2}
+.pair{display:grid;grid-template-columns:1.3fr 1fr;gap:36px}
 .pair .lab{display:flex;justify-content:space-between;margin-bottom:12px}
-.pair .on .lab .lbl:first-child{color:var(--accent)}
-.pair .o{font-family:var(--serif);font-size:18px;line-height:1.6;white-space:pre-wrap}
-.pair .b{font-family:var(--serif);font-size:15.5px;line-height:1.6;color:var(--soft);white-space:pre-wrap}
+.pair .on .lab .lbl:first-child{color:var(--ec)}
+.pair .o{font-family:var(--serif);font-size:18.5px;line-height:1.6;white-space:pre-wrap;min-height:200px}
+.pair .o .caret{background:var(--ec)}
+.pair .b{font-family:var(--serif);font-size:15.5px;line-height:1.6;color:var(--faint);white-space:pre-wrap}
 
 /* charts */
-.chart{margin:8px 0 0;max-width:820px}
-.crow{display:grid;grid-template-columns:110px 1fr 92px;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid var(--hair);font-size:13.5px}
+.chart{max-width:860px}
+.crow{display:grid;grid-template-columns:110px 1fr 96px;gap:16px;align-items:center;padding:7px 0;border-bottom:1px solid #1b1a18;font-size:13.5px;color:var(--soft)}
+.crow span:first-child::before{content:"";display:inline-block;width:7px;height:7px;background:var(--c);margin-right:10px;vertical-align:1px}
 .crow canvas{width:100%;height:22px}
-.crow .num{font-family:var(--mono);font-size:12px;text-align:right;white-space:nowrap}
+.crow .num{font-family:var(--mono);font-size:12px;text-align:right;white-space:nowrap;color:var(--ink)}
 .crow .num small{color:var(--faint);font-size:10.5px;margin-left:6px}
-.legend{display:flex;gap:24px;margin-top:14px;font-size:12.5px;color:var(--soft)}
-.legend canvas{display:inline-block;width:22px;height:10px;vertical-align:-1px;margin-right:8px}
-.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px 40px;margin-top:8px;max-width:940px}
-.kcard .t{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:10px;font-size:13.5px;font-weight:500;text-transform:capitalize}
-.kcard .t span{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--faint);text-transform:none}
-.kcard canvas{width:100%;height:96px;margin-top:10px}
-.kcard .ax{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:4px}
-.find{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;max-width:940px}
-.fc .h{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:10px;margin-bottom:12px;font-size:13.5px}
-.fc .h b{font-weight:500;text-transform:capitalize}
+.legend{display:flex;gap:28px;margin-top:16px;font-size:12.5px;color:var(--soft)}
+.legend canvas{display:inline-block;width:26px;height:10px;vertical-align:-1px;margin-right:8px}
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1000px}
+.kcard{border:1px solid var(--rule);background:var(--bg2);padding:14px 16px 12px}
+.kcard .t{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;text-transform:capitalize}
+.kcard .t b{font-weight:500;color:var(--c)}
+.kcard .t span{font-family:var(--mono);font-size:11px;color:var(--faint);text-transform:none}
+.kcard canvas{width:100%;height:110px;margin-top:12px}
+.kcard .ax{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:6px}
+.find{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1000px}
+.fc{border:1px solid var(--rule);border-top:3px solid var(--c);background:var(--bg2);padding:18px 20px}
+.fc .h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.fc .h b{font-family:var(--serif);font-weight:400;font-size:22px;text-transform:capitalize;color:var(--c)}
 .fc .q{font-size:12.5px;color:var(--faint);margin-bottom:8px}
-.fc .o{font-family:var(--serif);font-size:16px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:9;-webkit-box-orient:vertical;overflow:hidden}
+.fc .o{font-family:var(--serif);font-size:16px;line-height:1.55;color:#d9d5cc;display:-webkit-box;-webkit-line-clamp:10;-webkit-box-orient:vertical;overflow:hidden}
 
-footer{margin-top:120px;padding:28px 0 64px;border-top:1px solid var(--ink);display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--soft)}
-footer canvas{width:120px;height:12px;grid-column:2;grid-row:1/3}
+.band{width:100%;height:14px;margin-top:140px}
+footer{padding:40px 0 64px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
+footer .big{font-family:var(--serif);font-size:clamp(44px,7vw,104px);letter-spacing:-.045em;line-height:.9}
+footer .big em{font-style:normal;color:var(--pc);transition:color .8s}
+footer .meta{font-family:var(--mono);font-size:11.5px;color:var(--soft);text-align:right;line-height:1.9}
 
-@media (max-width:900px){
-  .wrap{padding:0 20px}
-  .hero{grid-template-columns:1fr;gap:40px;padding:56px 0 48px}
-  .field canvas{height:220px}
-  .demo{grid-template-columns:1fr}
-  .demo>div,.demo>div+div{padding:18px 0;border-left:0;border-top:1px solid var(--rule)}
-  .sh{grid-template-columns:1fr;gap:8px}
-  .sh .num{padding-top:0}
-  h2{font-size:34px}
-  .body{margin-left:0}
-  .explorer{grid-template-columns:1fr}
-  .list{position:static;flex-direction:row;overflow-x:auto;gap:18px;padding:12px 0;border-bottom:1px solid var(--rule)}
-  .list button{white-space:nowrap;grid-template-columns:auto;padding:4px 0}
-  .list canvas{display:none}
-  .panel{border-left:0;padding:24px 0 0}
-  .bar{grid-template-columns:1fr;gap:20px}
-  .meters{grid-template-columns:repeat(2,1fr)}
-  .pair,.find{grid-template-columns:1fr}
-  .kgrid{grid-template-columns:repeat(2,1fr);gap:28px 20px}
-  header.top nav a:not(:last-child){display:none}
+@media (max-width:1000px){
+  .strip{grid-template-columns:repeat(4,1fr)}
+  .stage{grid-template-columns:1fr}
+  .fieldwrap{border-right:0;border-bottom:1px solid var(--rule)}
+  .fieldwrap canvas{height:300px}
+  .detail{grid-template-columns:1fr}
+  .d-side{border-right:0;border-bottom:1px solid var(--rule)}
 }
+@media (max-width:760px){
+  .wrap{padding:0 18px}
+  .hero{padding-top:44px}
+  .hero-sub{flex-direction:column;align-items:flex-start}
+  .stats{gap:24px}
+  .fieldwrap canvas{height:220px}
+  .c-out{height:280px;font-size:18px}
+  .sh{grid-template-columns:1fr;gap:10px}
+  .body{margin-left:0}
+  .strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+  .card{flex:0 0 132px;scroll-snap-align:start}
+  .pair,.find,.kgrid{grid-template-columns:1fr}
+  .d-main,.d-side{padding:20px}
+  header.top nav a:not(:last-child){display:none}
+  footer{grid-template-columns:1fr}
+  footer .meta{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.ticker .run{animation:none}.caret{animation:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header class="top"><b><i></i>persona-neurons</b>
-  <nav><a href="#explore">Explorer</a><a href="#how">Method</a><a href="#sets">Sets</a><a href="#limits">Limits</a><a href="https://github.com/arjunkshah12345-hash/persona-neurons">GitHub ↗</a></nav>
-</header>
+<header class="top"><div class="wrap"><b><i></i>persona-neurons</b>
+  <nav><a href="#explore">Neurons</a><a href="#how">Method</a><a href="#sets">Sets</a><a href="#limits">Limits</a><a href="https://github.com/arjunkshah12345-hash/persona-neurons">GitHub ↗</a></nav>
+</div></header>
 
+<div class="wrap">
 <div class="hero">
-  <div>
-    <div class="lbl">Qwen3.5-4B · 32 layers × 9,216 MLP neurons</div>
-    <h1>One neuron, <span>one personality.</span></h1>
-    <p class="lede">We searched every MLP neuron in a 4B-parameter language model for single neurons that change how it talks. Turn up one, and the model answers in metaphor. Turn down another, and every question becomes a funeral.</p>
+  <div class="kicker"><i></i><span class="lbl">Live · Qwen3.5-4B · single MLP neurons</span></div>
+  <h1>One neuron,<br><em>one personality.</em></h1>
+  <div class="hero-sub">
+    <p class="lede">We searched all <b>294,912</b> MLP neurons in a 4B language model for single neurons that change how it talks. Pick one, turn the dial, and watch the answer change.</p>
+    <div class="stats"><div><b>14</b><span class="lbl">neurons</span></div><div><b>3</b><span class="lbl">search runs</span></div><div><b>11,900+</b><span class="lbl">rated answers</span></div></div>
   </div>
-  <div class="field" id="field">
-    <canvas class="d" id="fieldc"></canvas>
-    <div class="axis"><span class="lbl">Neuron 0</span><span class="lbl">Rows: layers 0–31 · illustration</span><span class="lbl">Neuron 9,215</span></div>
+  <div class="stage">
+    <div class="fieldwrap">
+      <canvas class="d" id="field"></canvas><div class="ftag" id="ftag"></div>
+      <div class="axis"><span class="lbl">Neuron 0</span><span class="lbl">32 layers · hover and click a glow</span><span class="lbl">9,215</span></div>
+    </div>
+    <div class="console">
+      <div class="c-head"><span class="sw"></span><b id="c-name"></b><span class="id" id="c-id"></span><button class="auto on" id="c-auto">auto</button></div>
+      <div class="c-note" id="c-note"></div>
+      <div class="dial" id="c-dial"></div>
+      <div class="c-q" style="margin-top:20px"><span id="c-q"></span><button id="c-next">next question ↻</button></div>
+      <div class="c-out" id="c-out"></div>
+      <div class="chips" id="c-chips"></div>
+    </div>
   </div>
 </div>
-<div class="demo" id="demo"></div>
+</div>
+<div class="ticker"><div class="run" id="ticker"></div></div>
 
+<div class="wrap">
 <section id="explore">
-  <div class="sh"><div class="num">01</div><div><h2>Explore the neurons</h2></div></div>
-  <div class="body prose" style="margin-bottom:40px">
-    <p>Each entry is one neuron in one layer, pushed by a fixed amount at every token. Nothing else changes: no system prompt, no fine-tuning. The answers are <b>not cherry-picked</b>. Each is the first sample generated for that question, rated 0 to 10 on the style by Claude.</p>
+  <div class="sh reveal"><div class="num"><i></i>01</div><h2>Meet the neurons</h2></div>
+  <div class="body prose reveal" style="margin-bottom:44px">
+    <p>Each one is a single neuron in a single layer, pushed by a fixed amount at every token. Nothing else changes: no system prompt, no fine-tuning. The answers are <b>not cherry-picked</b>. Each is the first sample generated for that question, rated 0 to 10 on the style by Claude.</p>
   </div>
-  <div class="explorer">
-    <div class="list" id="list"></div>
-    <div class="panel" id="panel"></div>
-  </div>
+  <div class="strip reveal" id="strip"></div>
+  <div class="detail reveal" id="detail"></div>
 </section>
 
 <section id="how">
-  <div class="sh"><div class="num">02</div><div><h2>How it works</h2></div></div>
-  <div class="body"><div class="prose">
+  <div class="sh reveal"><div class="num"><i></i>02</div><h2>How it works</h2></div>
+  <div class="body"><div class="prose reveal">
     <p>The steering recipe comes from <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a>. Pick a neuron <code>n</code> in the MLP of layer <code>L</code>. At every position, add a constant to that neuron's activation just before the down-projection:</p>
     <div class="formula">act[n] += dose × median‖resid<sub>L</sub>‖ / ‖W<sub>down</sub>[:, n]‖</div>
     <p>Dividing by the size of the neuron's output weights makes doses comparable across neurons. At dose 1, the neuron writes a vector into the residual stream as large as a typical residual vector at that layer. Negative doses push the neuron the other way. Most of the good neurons worked between ±0.5 and ±1.</p>
@@ -206,7 +276,7 @@ footer canvas{width:120px;height:12px;grid-column:2;grid-row:1/3}
   </div>
   <div class="chart" id="compare"></div>
 
-  <div class="prose" >
+  <div class="prose">
     <h3>What we noticed</h3>
     <ul>
       <li><b>Voice and topic are different neurons.</b> Some neurons change <i>how</i> the model talks (Shakespeare, poet, hype). Others change <i>what</i> it talks about: the sleepy neuron often writes about sleep, and the cat neuron decides your squeaky door is a cat.</li>
@@ -219,13 +289,13 @@ footer canvas{width:120px;height:12px;grid-column:2;grid-row:1/3}
 </section>
 
 <section id="sets">
-  <div class="sh"><div class="num">03</div><div><h2>Can a set of neurons do what one can't?</h2></div></div>
+  <div class="sh reveal"><div class="num"><i></i>03</div><h2>Can a set of neurons do what one can't?</h2></div>
   <div class="body" id="v3"></div>
 </section>
 
 <section id="limits">
-  <div class="sh"><div class="num">04</div><div><h2>Limits</h2></div></div>
-  <div class="body"><div class="prose">
+  <div class="sh reveal"><div class="num"><i></i>04</div><h2>Limits</h2></div>
+  <div class="body"><div class="prose reveal">
     <ul>
       <li><b>The judge is a language model.</b> Claude's ratings are much better than the model judging itself, but they are still ratings. All samples and scores are in the repo, so you can read them yourself.</li>
       <li><b>Small samples.</b> Finals use 8 questions × 2 samples (temperature 0.7). Differences under about 0.05 in style score are noise.</li>
@@ -237,7 +307,14 @@ footer canvas{width:120px;height:12px;grid-column:2;grid-row:1/3}
   </div>
 </div>
 </section>
-<footer><span>Steering recipe by <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a> · Model: Qwen/Qwen3.5-4B · Type: Geist Serif, Geist, Geist Mono (OFL)</span><span><a href="https://github.com/arjunkshah12345-hash/persona-neurons">github.com/arjunkshah12345-hash/persona-neurons</a> · MIT</span><canvas class="d" id="footmark"></canvas></footer>
+
+</div>
+<canvas class="d band" id="band"></canvas>
+<div class="wrap">
+<footer>
+  <div class="big">One neuron,<br><em>one personality.</em></div>
+  <div class="meta">Steering recipe by <a href="https://x.com/_lyraaaa_">@_lyraaaa_</a><br>Model: Qwen/Qwen3.5-4B<br>Type: Geist Serif, Geist, Geist Mono (OFL)<br><a href="https://github.com/arjunkshah12345-hash/persona-neurons">github.com/arjunkshah12345-hash/persona-neurons</a> · MIT</div>
+</footer>
 </div>
 
 <script src="data.js"></script>
@@ -249,165 +326,281 @@ const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
 // light markdown: the model writes **bold**, *italics* and ### headers
 const md = s => esc(s).replace(/^#{1,4}\s*(.+)$/gm, "<b>$1</b>").replace(/^\s*---+\s*$/gm, "")
   .replace(/\*\*([^*\n]+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\*)/g, "$1<i>$2</i>");
+const plain = s => s.replace(/<think>\s*<\/think>\s*/g, "").replace(/\*\*|__/g, "").replace(/^#{1,4}\s*/gm, "")
+  .replace(/^\s*---+\s*$/gm, "").replace(/(^|[^*\w])\*([^*\n]+?)\*/g, "$1$2").trim();
 const fmt = d => (d > 0 ? "+" : "") + (+d.toFixed(3));
 const pct = v => Math.round(v * 100);
-const INK = "#111110", ACC = "#ff4a1c", GREY = "#9a9a93";
+const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const NEU = D.neurons, QS = Object.keys(D.baseline);
+const COL = { poetic: "#b892ff", melancholy: "#5e8bff", shakespeare: "#ff5d8f", food: "#ff9a3c", hype: "#d8ff3e",
+  sleepy: "#7fd4ff", child: "#ffd84d", cats: "#ff8ad8", rhyme: "#3ee6b4", noir: "#d6d2c4", sarcastic: "#ff5a3c",
+  conspiracy: "#8cff5a", anxious: "#ffb199" };
+const colOf = c => COL[c] || "#77746c";
+const GREY = "#4a4843", TRACK = "#262523";
 
 /* ---------- dither kit: ordered (Bayer 8×8) dithering on canvas ----------
-   A canvas is drawn at 1/PX resolution as layers of "ink amount" (0..1 per pixel, painted in
-   greyscale: black = full ink). Each layer is thresholded against the Bayer matrix and composited
-   in its own colour, then scaled up with nearest-neighbour so every dither dot is PX css pixels. */
+   Each layer is painted at 1/PX resolution in greyscale (black = full ink), thresholded against the
+   Bayer matrix and composited in its own colour; the canvas is scaled up with nearest-neighbour. */
 const BAYER = (() => {
   let m = [[0]];
   for (let n = 1; n < 8; n *= 2) m = [...m.map(r => [...r.map(v => 4 * v), ...r.map(v => 4 * v + 2)]), ...m.map(r => [...r.map(v => 4 * v + 3), ...r.map(v => 4 * v + 1)])];
   return m.map(r => r.map(v => (v + 0.5) / 64));
 })();
 const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
-function dither(cv, layers, PX = 2) {
+function fit(cv, PX) {
   const w = Math.max(1, Math.round(cv.clientWidth / PX)), h = Math.max(1, Math.round(cv.clientHeight / PX));
   if (cv.width !== w) cv.width = w;
   if (cv.height !== h) cv.height = h;
-  const out = cv.getContext("2d"), img = out.createImageData(w, h), px = img.data;
+  return [w, h];
+}
+function dither(cv, layers, PX = 2) {
+  const [w, h] = fit(cv, PX), out = cv.getContext("2d"), img = out.createImageData(w, h), px = img.data;
   const off = dither.off || (dither.off = document.createElement("canvas"));
   off.width = w; off.height = h;
   const ctx = off.getContext("2d", { willReadFrequently: true });
   for (const L of layers) {
-    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h); ctx.fillStyle = "#000"; ctx.strokeStyle = "#000";
-    L.draw(ctx, w, h);
+    ctx.save(); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h); ctx.fillStyle = "#000"; ctx.strokeStyle = "#000";
+    L.draw(ctx, w, h); ctx.restore();
     const src = ctx.getImageData(0, 0, w, h).data, [r, g, b] = hex(L.color);
-    for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i += 4) {
+    for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i += 4)
       if (1 - src[i] / 255 > BAYER[y & 7][x & 7]) { px[i] = r; px[i + 1] = g; px[i + 2] = b; px[i + 3] = 255; }
-    }
   }
   out.putImageData(img, 0, 0);
 }
-// horizontal bar whose ink ramps up along its length, so the dither pattern is visible
-const ramp = (v, lo = 0.18, hi = 1, y0 = 0, y1 = 1) => (ctx, w, h) => {
+const grey = a => `rgb(${255 * (1 - a)},${255 * (1 - a)},${255 * (1 - a)})`;
+// bar whose ink ramps up along its length so the dither texture shows
+const ramp = (v, lo = 0.4, hi = 1, y0 = 0, y1 = 1) => (ctx, w, h) => {
   const x1 = Math.round(w * Math.max(0, Math.min(1, v)));
   if (x1 < 1) return;
-  const g = ctx.createLinearGradient(0, 0, x1, 0), c = a => `rgb(${255 * (1 - a)},${255 * (1 - a)},${255 * (1 - a)})`;
-  g.addColorStop(0, c(lo)); g.addColorStop(1, c(hi));
-  ctx.fillStyle = g; ctx.fillRect(0, Math.round(h * y0), x1, Math.round(h * (y1 - y0)));
+  const g = ctx.createLinearGradient(0, 0, x1, 0);
+  g.addColorStop(0, grey(lo)); g.addColorStop(1, grey(hi));
+  ctx.fillStyle = g; ctx.fillRect(0, Math.round(h * y0), x1, Math.max(1, Math.round(h * (y1 - y0))));
 };
+const solid = (ctx, w, h) => ctx.fillRect(0, 0, w, h);
 const redraws = [];
 const live = fn => { redraws.push(fn); fn(); };
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => redraws.forEach(f => f()), 120); });
+const ease = p => 1 - Math.pow(1 - p, 3);
+function tween(ms, fn) { if (REDUCE) return fn(1); const t0 = performance.now(); const f = now => { const p = Math.min(1, (now - t0) / ms); fn(ease(p)); if (p < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
+function onEnter(el, fn, threshold = 0.15) { new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, { threshold }).observe(el); }
+// typewriter that cancels itself when the same element is re-typed
+function typeInto(el, text, html) {
+  const tok = (el._tok || 0) + 1; el._tok = tok;
+  if (REDUCE) { el.innerHTML = html ?? esc(text); return; }
+  el.innerHTML = ""; const span = document.createElement("span"), caret = document.createElement("span");
+  caret.className = "caret"; el.append(span, caret);
+  let i = 0;
+  const step = () => {
+    if (el._tok !== tok) return;
+    i = Math.min(text.length, i + 3 + (Math.random() * 3 | 0)); span.textContent = text.slice(0, i);
+    if (i < text.length) setTimeout(step, 18); else if (html) setTimeout(() => { if (el._tok === tok) { el.innerHTML = html; el.append(caret); } }, 400);
+  };
+  step();
+}
+// seeded RNG for per-neuron sigils
+const rng = s => () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 
-/* ---------- hero: dithered activation field ---------- */
+/* ---------- dial: drag or click between doses ---------- */
+function makeDial(el, onChange, offset = false) {
+  el.innerHTML = `<div class="dial-track"><canvas class="d"></canvas><span class="knob"></span></div><div class="dial-stops"></div>`;
+  const tr = $(".dial-track", el), cv = $("canvas", el), knob = $(".knob", el), stops = $(".dial-stops", el);
+  const st = { n: 2, idx: 0, v: 0, color: "#fff", labels: [] };
+  const draw = v => { dither(cv, [{ color: TRACK, draw: solid }, { color: st.color, draw: ramp(v, 0.35, 1) }], 2); knob.style.left = `calc(${v * 100}% - ${v * 14}px)`; };
+  // stop i sits at pos(i) along the track; with offset the first stop is already partway in
+  const pos = i => offset ? (i + 1) / st.n : (st.n > 1 ? i / (st.n - 1) : 0);
+  const pick = e => { const r = tr.getBoundingClientRect(), u = (e.clientX - r.left) / r.width;
+    let bi = 0; for (let i = 1; i < st.n; i++) if (Math.abs(pos(i) - u) < Math.abs(pos(bi) - u)) bi = i;
+    if (bi !== st.idx) onChange(bi); };
+  tr.addEventListener("pointerdown", e => { tr.setPointerCapture(e.pointerId); pick(e); });
+  tr.addEventListener("pointermove", e => { if (tr.hasPointerCapture(e.pointerId)) pick(e); });
+  live(() => draw(st.v));
+  return {
+    set(labels, idx, color) {
+      if (labels.join() !== st.labels.join()) {
+        st.n = labels.length;
+        stops.innerHTML = labels.map((l, i) => { const v = pos(i); return `<button data-i="${i}" style="left:${v * 100}%;transform:translateX(-${v * 100}%)">${l}</button>`; }).join("");
+        $$("button", stops).forEach(b => b.onclick = () => onChange(+b.dataset.i));
+        st.labels = labels; st.n = labels.length;
+      }
+      $$("button", stops).forEach((b, i) => b.classList.toggle("sel", i === idx));
+      const from = st.v, to = pos(idx), colorChanged = color !== st.color;
+      st.idx = idx; st.color = color;
+      if (colorChanged) draw(from);
+      tween(320, p => { st.v = from + (to - from) * p; draw(st.v); });
+    },
+  };
+}
+
+/* ---------- hero: field + console ---------- */
+const H = { sel: NEU.findIndex(x => x.L === 5 && x.n === 7331), dose: 0, q: "Explain how a refrigerator keeps things cold.", mouse: null, auto: !REDUCE };
+if (H.sel < 0) H.sel = 0;
+const answer = (x, di, q) => di < 0 ? D.baseline[q] : (x.doses[di].samples.find(s => s.q === q) || x.doses[di].samples[0]).out;
+const setPC = c => document.documentElement.style.setProperty("--pc", c);
+
+const heroDial = makeDial($("#c-dial"), i => { stopAuto(); H.dose = i; renderConsole(); });
+function select(i) { H.sel = i; H.dose = NEU[i].best + 1; renderConsole(); }
+function renderConsole() {
+  const x = NEU[H.sel], c = colOf(x.concept);
+  setPC(c);
+  $("#c-name").textContent = x.label;
+  $("#c-id").textContent = `L${x.L} · N${x.n}`;
+  $("#c-note").textContent = x.note;
+  $("#c-q").textContent = "› " + H.q;
+  heroDial.set(["off", ...x.doses.map(d => fmt(d.dose))], H.dose, c);
+  const t = plain(answer(x, H.dose - 1, H.q)), cut = t.length > 520 ? t.slice(0, 520).replace(/\s+\S*$/, "") + "…" : t;
+  typeInto($("#c-out"), cut);
+  $$("#c-chips button").forEach((b, i) => b.classList.toggle("sel", i === H.sel));
+}
+$("#c-chips").innerHTML = NEU.map((x, i) => `<button title="${esc(x.label)}" data-i="${i}"><i style="background:${colOf(x.concept)}"></i></button>`).join("");
+$$("#c-chips button").forEach(b => b.onclick = () => { stopAuto(); select(+b.dataset.i); });
+$("#c-next").onclick = () => { stopAuto(); H.q = QS[(QS.indexOf(H.q) + 1) % QS.length]; renderConsole(); };
+let autoTimer;
+function startAuto() { H.auto = true; $("#c-auto").classList.add("on"); clearInterval(autoTimer);
+  autoTimer = setInterval(() => { if (!document.hidden && heroVisible) select((H.sel + 1) % NEU.length); }, 8500); }
+function stopAuto() { H.auto = false; $("#c-auto").classList.remove("on"); clearInterval(autoTimer); }
+$("#c-auto").onclick = () => H.auto ? stopAuto() : (startAuto(), select((H.sel + 1) % NEU.length));
+let heroVisible = true;
+new IntersectionObserver(e => { heroVisible = e[0].isIntersecting; }).observe($(".stage"));
+select(H.sel);
+if (H.auto) startAuto(); else $("#c-auto").classList.remove("on");
+
 (function field() {
-  const cv = $("#fieldc"), wrap = $("#field");
-  const L = 5, N = 7331, NL = 32;
-  const tag = document.createElement("div"); tag.className = "tag"; tag.textContent = `L${L} · N${N} · −0.75`; wrap.appendChild(tag);
-  // smooth value noise
+  const cv = $("#field"), tag = $("#ftag"), PX = 3, NL = 32;
   const R = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
   const sm = t => t * t * (3 - 2 * t);
   const noise = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), xf = sm(x - xi), yf = sm(y - yi);
     const a = R(xi, yi), b = R(xi + 1, yi), c = R(xi, yi + 1), d = R(xi + 1, yi + 1);
     return a + (b - a) * xf + (c - a) * yf + (a - b - c + d) * xf * yf; };
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let t = 0, visible = true, last = 0;
-  new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(cv);
-  function frame(now) {
-    if (!reduce) requestAnimationFrame(frame);
-    if (!visible || now - last < 66) return;
-    last = now; t += 0.035;
-    const pulse = 0.55 + 0.45 * Math.sin(t * 1.6);
-    dither(cv, [
-      { color: INK, draw(ctx, w, h) {
-          const img = ctx.createImageData(w, h), d = img.data, rowH = h / NL;
-          for (let y = 0; y < h; y++) {
-            const layer = Math.floor(y / rowH), inRow = (y % rowH) / rowH;
-            for (let x = 0; x < w; x++) {
-              let v = 0.75 * noise(x / 26 + t * 0.4, layer * 0.9 + t * 0.15) * noise(x / 7 - t * 0.3, layer * 2.3);
-              v = Math.min(1, Math.pow(v, 1.35) * 1.25);
-              if (inRow > 0.82) v = 0;  // gap between layers
-              const k = (y * w + x) * 4, g = 255 * (1 - v); d[k] = d[k + 1] = d[k + 2] = g; d[k + 3] = 255;
-            }
-          }
-          ctx.putImageData(img, 0, 0);
-        } },
-      { color: ACC, draw(ctx, w, h) {
-          const rowH = h / NL, cx = Math.round(w * N / 9216), cy = (L + 0.41) * rowH;
-          const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.22 * (0.7 + 0.3 * pulse));
-          g.addColorStop(0, "rgb(0,0,0)"); g.addColorStop(0.15, `rgb(${110 - 60 * pulse},${110 - 60 * pulse},${110 - 60 * pulse})`); g.addColorStop(1, "rgb(255,255,255)");
-          ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
-          ctx.fillStyle = "#000"; ctx.fillRect(cx - 2, Math.floor(L * rowH), 4, Math.ceil(rowH * 0.82));
-        } },
-    ], 3);
-    const rowH = cv.clientHeight / NL;
-    tag.style.left = Math.min(cv.clientWidth - 150, cv.clientWidth * N / 9216 + 14) + "px";
-    tag.style.top = (L * rowH - 26) + "px";
+  const pos = i => [NEU[i].n / 9216, (NEU[i].L + 0.38) / NL];
+  const rgbs = NEU.map(x => hex(colOf(x.concept))), dim = hex("#3b3a36"), cream = hex("#efece4");
+  const phase = NEU.map((_, i) => i * 1.7);
+  const hit = () => { if (!H.mouse) return -1; let best = -1, bd = 0.004;
+    NEU.forEach((_, i) => { const [px, py] = pos(i), dx = px - H.mouse[0], dy = (py - H.mouse[1]) * 0.55, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = i; } }); return best; };
+  cv.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); H.mouse = [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; cv.style.cursor = hit() >= 0 ? "pointer" : "crosshair"; if (REDUCE) render(); });
+  cv.addEventListener("pointerleave", () => { H.mouse = null; });
+  cv.addEventListener("click", () => { const h = hit(); if (h >= 0) { stopAuto(); select(h); } });
+  let t = 0, last = 0, vis = true;
+  new IntersectionObserver(e => { vis = e[0].isIntersecting; }).observe(cv);
+  function render() {
+    const [w, h] = fit(cv, PX), ctx = cv.getContext("2d"), img = ctx.createImageData(w, h), d = img.data, rowH = h / NL;
+    const base = new Float32Array(NL * w);
+    for (let L = 0; L < NL; L++) for (let x = 0; x < w; x++)
+      base[L * w + x] = Math.min(1, Math.pow(noise(x / 20 + t * 0.35, L * 0.9 + t * 0.12) * noise(x / 6 - t * 0.25, L * 2.3), 1.3) * 1.05);
+    const hov = hit();
+    const glows = NEU.map((x, i) => { const [gx, gy] = pos(i), sel = i === H.sel, r = (sel ? 0.13 : i === hov ? 0.07 : 0.045) * w;
+      return { x: gx * w, y: gy * h, r, amp: sel ? 0.95 + 0.05 * Math.sin(t * 3) : (i === hov ? 0.8 : 0.32 + 0.22 * Math.sin(t * 1.4 + phase[i])), rgb: rgbs[i] }; });
+    if (H.mouse && hov < 0) glows.push({ x: H.mouse[0] * w, y: H.mouse[1] * h, r: 0.06 * w, amp: 0.45, rgb: cream });
+    const [sx, sy] = pos(H.sel), selX = Math.round(sx * w), selL = NEU[H.sel].L;
+    for (let y = 0; y < h; y++) {
+      const L = Math.min(NL - 1, Math.floor(y / rowH)), gap = (y - L * rowH) / rowH > 0.72;
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4, thr = BAYER[y & 7][x & 7];
+        let bv = 0, bc = null;
+        for (const g of glows) { const dx = (x - g.x) / g.r, dy = (y - g.y) / (g.r * 0.8), d2 = dx * dx + dy * dy;
+          if (d2 < 1) { const v = (1 - d2) * (1 - d2) * g.amp; if (v > bv) { bv = v; bc = g.rgb; } } }
+        let c = null;
+        if (!gap && L === selL && Math.abs(x - selX) <= 1) c = rgbs[H.sel];
+        else if (bc && bv > thr) c = bc;
+        else if (!gap && base[L * w + x] * (1 + bv * 2) > thr + 0.08) c = dim;
+        if (c) { d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255; }
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const x = NEU[H.sel], cw = cv.clientWidth;
+    tag.textContent = `L${x.L} · N${x.n}`;
+    tag.style.left = Math.max(0, Math.min(cw - 110, sx * cw - 40)) + 18 + "px";
+    tag.style.top = Math.max(0, sy * cv.clientHeight - 30) + 18 + "px";
   }
-  requestAnimationFrame(frame);
-  if (reduce) addEventListener("resize", () => requestAnimationFrame(frame));
+  function frame(now) { requestAnimationFrame(frame); if (!vis || now - last < 55) return; last = now; t += 0.045; render(); }
+  if (REDUCE) { live(render); } else requestAnimationFrame(frame);
 })();
 
-/* ---------- hero demo: condolence neuron on the refrigerator question ---------- */
-(function demo() {
-  const nr = D.neurons.find(x => x.L === 5 && x.n === 7331);
-  const q = "Explain how a refrigerator keeps things cold.";
-  const smp = nr.doses[nr.best].samples.find(s => s.q === q);
-  const cut = t => t.length > 260 ? t.slice(0, 260).replace(/\s+\S*$/, "") + "…" : t;
-  $("#demo").innerHTML = `<div><div class="lbl">Prompt</div><div class="q" style="margin-top:10px">“${esc(q)}”</div></div>
-    <div><div class="lbl">Unsteered</div><div class="txt">${md(cut(D.baseline[q]))}</div></div>
-    <div class="on"><div class="lbl">L5 N7331 at ${fmt(nr.doses[nr.best].dose)}</div><div class="txt">${md(cut(smp.out))}</div></div>`;
+/* ---------- ticker of real steered lines ---------- */
+(function ticker() {
+  const items = NEU.map(x => {
+    const s = [...x.doses[x.best].samples].sort((a, b) => b.score - a.score)[0];
+    let q = plain(s.out).replace(/^\s*\S{1,10}\s*\n/, "").replace(/\s+/g, " ").split(/(?<=[.!?])\s/)[0];
+    if (q.length > 110) q = q.slice(0, 108).replace(/\s+\S*$/, "") + "…";
+    return `<span><i style="background:${colOf(x.concept)}"></i>“${esc(q)}”<b>${esc(x.label)}</b></span>`;
+  }).join("");
+  $("#ticker").innerHTML = items + items;
 })();
 
 /* ---------- explorer ---------- */
+const E = { sel: 0, dose: NEU[0].best, q: "What is gravity?" };
 const SHORT = {"How do I fix a squeaky door?": "Squeaky door", "What is gravity?": "Gravity",
   "Give me advice for my first day at a new job.": "First day at work", "How do I learn a new language quickly?": "Learn a language",
   "What is the best way to organize my desk?": "Organize my desk", "Explain how a refrigerator keeps things cold.": "Refrigerator",
   "What's a good name for a new car?": "Name a car", "How do I get better sleep?": "Better sleep"};
-let cur = 0, dsel = null, qsel = "What is gravity?";
-const maxStyle = Math.max(...D.neurons.map(x => x.doses[x.best].style));
-function renderList() {
-  $("#list").innerHTML = D.neurons.map((x, i) =>
-    `<button class="${i === cur ? "sel" : ""}" data-i="${i}" title="style ${x.doses[x.best].style.toFixed(2)}"><span>${esc(x.label)}</span><canvas class="d"></canvas></button>`).join("");
-  $$("#list button").forEach(b => b.onclick = () => { cur = +b.dataset.i; dsel = null; render(); });
-  $$("#list canvas").forEach((cv, i) => dither(cv, [{ color: i === cur ? ACC : INK, draw: ramp(D.neurons[i].doses[D.neurons[i].best].style / maxStyle, 0.45, 1) }], 2));
+function sigil(cv, x, t = 0) {
+  const r = rng(x.L * 9216 + x.n), blobs = [0, 1, 2, 3].map(() => ({ x: 0.15 + r() * 0.7, y: 0.15 + r() * 0.7, s: 0.12 + r() * 0.22 }));
+  const ang = r() * Math.PI, fq = 2 + r() * 6, ca = Math.cos(ang), sa = Math.sin(ang);
+  dither(cv, [{ color: colOf(x.concept), draw(ctx, w, h) {
+    const img = ctx.createImageData(w, h), d = img.data;
+    for (let py = 0; py < h; py++) for (let px = 0; px < w; px++) {
+      const u = px / w, v = py / h * h / w;
+      let a = 0; for (const b of blobs) { const dx = u - b.x, dy = v - b.y * h / w; a += Math.exp(-(dx * dx + dy * dy) / (b.s * b.s)); }
+      const s = 0.5 + 0.5 * Math.sin((u * ca + v * sa) * fq * 6.283 + t);
+      const ink = Math.min(1, a * (0.35 + 0.65 * s)), k = (py * w + px) * 4, g = 255 * (1 - ink);
+      d[k] = d[k + 1] = d[k + 2] = g; d[k + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  } }], 3);
 }
-function render() {
-  renderList();
-  const x = D.neurons[cur];
-  const di = dsel ?? x.best, d = x.doses[di];
-  const smp = d.samples.find(s => s.q === qsel) || d.samples[0];
+$("#strip").innerHTML = NEU.map((x, i) => `<button class="card" data-i="${i}" style="--c:${colOf(x.concept)}"><canvas class="d"></canvas>
+  <div class="nm">${esc(x.label)}</div><div class="row"><span class="lbl">L${x.L}·${x.n}</span><b>${x.doses[x.best].style.toFixed(2)}</b></div></button>`).join("");
+$$("#strip .card").forEach((b, i) => {
+  const cv = $("canvas", b); let t = 0, raf = 0;
+  live(() => sigil(cv, NEU[i], t));
+  b.onmouseenter = () => { if (REDUCE) return; const go = () => { t += 0.12; sigil(cv, NEU[i], t); raf = requestAnimationFrame(go); }; go(); };
+  b.onmouseleave = () => cancelAnimationFrame(raf);
+  b.onclick = () => { E.sel = i; E.dose = NEU[i].best; renderDetail(true); };
+});
+$("#detail").innerHTML = `<div class="d-side"><h4 id="e-name"></h4><div class="lbl id" id="e-id"></div><p id="e-note"></p>
+  <div class="dial-lab"><span class="lbl">Dose</span><span class="lbl" id="e-dv"></span></div><div class="dial" id="e-dial"></div>
+  <div class="meters" id="e-meters"></div></div>
+  <div class="d-main"><div class="qs" id="e-qs"></div><p class="qtitle" id="e-qt"></p>
+  <div class="pair"><div class="on"><div class="lab"><span class="lbl" id="e-sl"></span><span class="lbl" id="e-sc"></span></div><div class="o" id="e-out"></div></div>
+  <div><div class="lab"><span class="lbl">Unsteered</span></div><div class="b" id="e-base"></div></div></div></div>`;
+const eDial = makeDial($("#e-dial"), i => { E.dose = i; renderDetail(); }, true);
+function renderDetail() {
+  const x = NEU[E.sel], d = x.doses[E.dose], c = colOf(x.concept);
+  $("#detail").style.setProperty("--ec", c);
+  $$("#strip .card").forEach((b, i) => b.classList.toggle("sel", i === E.sel));
+  $("#e-name").textContent = x.label; $("#e-id").textContent = `Layer ${x.L} · Neuron ${x.n}`; $("#e-note").textContent = x.note;
+  $("#e-dv").textContent = E.dose === x.best ? "best dose" : "";
+  eDial.set(x.doses.map(dd => fmt(dd.dose)), E.dose, c);
   const M = [["Style", d.style, d.style.toFixed(2)], [x.concept, d.concept, pct(d.concept) + "%"], ["On topic", d.on_topic, pct(d.on_topic) + "%"], ["Fluent", d.fluent, pct(d.fluent) + "%"]];
-  $("#panel").innerHTML = `
-    <div class="panel-head"><h4>${esc(x.label)}</h4><span class="lbl">Layer ${x.L} · Neuron ${x.n}</span></div>
-    <p class="desc">${esc(x.note)}</p>
-    <div class="bar">
-      <div><div class="lbl">Dose</div><div class="seg">${x.doses.map((dd, j) => `<button data-j="${j}" class="${j === di ? "sel" : ""}">${fmt(dd.dose)}</button>`).join("")}</div></div>
-      <div class="meters">${M.map(([k, , s]) => `<div class="meter"><div class="top"><span class="lbl">${esc(k)}</span><b>${s}</b></div><canvas class="d"></canvas></div>`).join("")}</div>
-    </div>
-    <div class="qs">${d.samples.map(s => `<button data-q="${esc(s.q)}" class="${s.q === smp.q ? "sel" : ""}">${esc(SHORT[s.q] || s.q)}</button>`).join("")}</div>
-    <p class="qtitle">“${esc(smp.q)}”</p>
-    <div class="pair">
-      <div class="on"><div class="lab"><span class="lbl">Steered · ${fmt(d.dose)}</span><span class="lbl">${esc(x.concept)} ${smp.score}/10</span></div><div class="o">${md(smp.out) || "<i>(empty)</i>"}</div></div>
-      <div><div class="lab"><span class="lbl">Unsteered</span></div><div class="b">${md(D.baseline[smp.q] || "")}</div></div>
-    </div>`;
-  $$(".meter canvas").forEach((cv, i) => dither(cv, [
-    { color: "#d9d9d2", draw: (c, w, h) => { c.fillStyle = "#000"; c.fillRect(0, 0, w, h); } },
-    { color: i === 0 ? ACC : INK, draw: ramp(M[i][1], 0.3, 1) }], 2));
-  $$(".seg button").forEach(b => b.onclick = () => { dsel = +b.dataset.j; render(); });
-  $$(".qs button").forEach(b => b.onclick = () => { qsel = b.dataset.q; render(); });
+  $("#e-meters").innerHTML = M.map(([k, , s]) => `<div class="meter"><div class="top"><span class="lbl">${esc(k)}</span><b>${s}</b></div><canvas class="d"></canvas></div>`).join("");
+  $$("#e-meters canvas").forEach((cv, i) => tween(600, p => dither(cv, [{ color: TRACK, draw: solid }, { color: i ? "#efece4" : c, draw: ramp(M[i][1] * p, 0.35, 1) }], 2)));
+  const smp = d.samples.find(s => s.q === E.q) || d.samples[0];
+  $("#e-qs").innerHTML = d.samples.map(s => `<button data-q="${esc(s.q)}" class="${s.q === smp.q ? "sel" : ""}">${esc(SHORT[s.q] || s.q)}</button>`).join("");
+  $$("#e-qs button").forEach(b => b.onclick = () => { E.q = b.dataset.q; renderDetail(); });
+  $("#e-qt").textContent = `“${smp.q}”`;
+  $("#e-sl").textContent = `Steered · ${fmt(d.dose)}`; $("#e-sc").textContent = `${x.concept} ${smp.score}/10`;
+  typeInto($("#e-out"), plain(smp.out), md(smp.out) || "<i>(empty)</i>");
+  $("#e-base").innerHTML = md(D.baseline[smp.q] || "");
 }
-live(render);
+renderDetail();
 
-/* ---------- attempt 1 vs 2 ---------- */
-function barChart(el, rows, a, b) {
+/* ---------- charts ---------- */
+function barChart(el, rows, la, lb) {
   const max = Math.max(...rows.map(r => Math.max(r.a || 0, r.b || 0)), 0.01);
-  el.innerHTML = rows.map(r => `<div class="crow"><span>${esc(r.label)}</span><canvas class="d"></canvas><span class="num">${r.num}</span></div>`).join("");
-  live(() => $$("canvas", el).forEach((cv, i) => dither(cv, [
-    { color: GREY, draw: ramp((rows[i].a || 0) / max, 0.4, 0.75, 0.08, 0.42) },
-    { color: ACC, draw: ramp((rows[i].b || 0) / max, 0.55, 1, 0.55, 0.92) }], 2)));
-  el.insertAdjacentHTML("afterend", `<div class="legend"><span><canvas class="d"></canvas>${a}</span><span><canvas class="d"></canvas>${b}</span></div>`);
-  const lg = el.nextElementSibling;
-  live(() => { const [c1, c2] = $$("canvas", lg); dither(c1, [{ color: GREY, draw: ramp(1, 0.4, 0.75) }], 2); dither(c2, [{ color: ACC, draw: ramp(1, 0.55, 1) }], 2); });
+  el.innerHTML = rows.map(r => `<div class="crow" style="--c:${colOf(r.label)}"><span>${esc(r.label)}</span><canvas class="d"></canvas><span class="num">${r.num}</span></div>`).join("");
+  let P = 0;
+  const draw = () => $$("canvas", el).forEach((cv, i) => { const p = Math.max(0, Math.min(1, P * (1 + rows.length * 0.04) - i * 0.04));
+    dither(cv, [{ color: GREY, draw: ramp((rows[i].a || 0) / max * p, 0.45, 0.8, 0.1, 0.42) },
+      { color: colOf(rows[i].label), draw: ramp((rows[i].b || 0) / max * p, 0.5, 1, 0.55, 0.92) }], 2); });
+  live(draw);
+  onEnter(el, () => tween(1600, p => { P = p; draw(); }));
+  el.insertAdjacentHTML("afterend", `<div class="legend"><span><canvas class="d"></canvas>${la}</span><span><canvas class="d"></canvas>${lb}</span></div>`);
+  const [c1, c2] = $$("canvas", el.nextElementSibling);
+  live(() => { dither(c1, [{ color: GREY, draw: ramp(1, 0.45, 0.8) }], 2);
+    dither(c2, ["#b892ff", "#ff9a3c", "#3ee6b4"].map((c, j) => ({ color: c, draw: (ctx, w, h) => ctx.fillRect(Math.round(j * w / 3), 0, Math.ceil(w / 3), h) })), 2); });
 }
 barChart($("#compare"), [...D.compare].sort((x, y) => y.v2 - x.v2).map(r => ({ label: r.concept, a: r.v1, b: r.v2, num: r.v2.toFixed(2) })),
-  "Attempt 1: activation difference", "Attempt 2: gradient attribution");
+  "Attempt 1: activation difference", "Attempt 2: gradient attribution (colour per style)");
 
-/* ---------- v3: sets of neurons ---------- */
 (function v3() {
   const el = $("#v3");
   if (!D.v3_screen) { el.innerHTML = `<div class="prose"><p>Results will appear here.</p></div>`; return; }
@@ -432,19 +625,19 @@ barChart($("#compare"), [...D.compare].sort((x, y) => y.v2 - x.v2).map(r => ({ l
   const shows = fin3.length ? C.map(bestFin).filter(f => f && f.style >= 0.3).sort((a, b) => b.style - a.style) : [];
   const pick = f => f.samples.reduce((a, b) => (b.score > a.score ? b : a));
 
-  el.innerHTML = `<div class="prose">
+  el.innerHTML = `<div class="prose reveal">
     <p>Pirate, cowboy and Yoda never had a single neuron. So the third run steered the top-<i>k</i> attributed neurons together, for <i>k</i> = 2 to 32, with the dose split in proportion to each neuron's attribution. We tried two pools (all layers, or layers 0–12 only) and three total doses: ${D.v3_screen.reduce((n, v) => n + v.points.length, 0)} configurations.</p>
     <p><b>Short answer: no.</b> In the finals (16 answers per set), no set beats the best single neuron by more than noise. The closest is ${esc(closest.c)}: ${closest.g.style.toFixed(2)} for ${closest.g.k} neurons vs ${closest.s.toFixed(2)} for one. Styles with no good single neuron stay that way: ${list(dead)} score near zero at every <i>k</i>.</p>
     <p>Some sets looked better in the screen (${shrank.join(", ")} in finals). That is the winner's curse: the best of 480 configurations, each rated on only 4 answers, is mostly the luckiest. A real effect should survive re-testing on more answers, and these didn't.</p>
     <p>A likely reason: the attribution ranks neurons one at a time, at dose 0. Neurons ranked 2 to 32 mostly push the same direction as neuron 1, but each also adds its own side effects, so fluency drops faster than the style grows.</p></div>
     <h3>Best set vs best single neuron</h3>
-    <p class="note" style="max-width:640px">Style score of the best set against the best single neuron from attempt 2. Sets come from the finals (16 answers each) where available, otherwise from the screen (4 answers each).</p>
+    <p class="note" style="max-width:660px;margin:0 0 18px">Style score of the best set against the best single neuron from attempt 2. Sets come from the finals (16 answers each) where available, otherwise from the screen (4 answers each).</p>
     <div class="chart" id="setchart"></div>
     <h3>Style vs number of neurons</h3>
-    <p class="note" style="max-width:640px">Best style at each k in the screen. Orange: all layers. Grey: layers 0–12 only. Dashed: best single neuron. Not shown (under 0.15 at every k): ${list(flat)}.</p>
-    <div class="kgrid">${shown.map(r => `<div class="kcard"><div class="t">${esc(r.c)}<span>best ${r.g.style.toFixed(2)}</span></div><canvas class="d" data-c="${esc(r.c)}"></canvas><div class="ax">${KS.map(k => `<span>${k}</span>`).join("")}</div></div>`).join("")}</div>
+    <p class="note" style="max-width:660px;margin:0 0 18px">Best style at each k in the screen. Colour: all layers. Grey: layers 0–12 only. Dashed: best single neuron. Not shown (under 0.15 at every k): ${list(flat)}.</p>
+    <div class="kgrid">${shown.map(r => `<div class="kcard" style="--c:${colOf(r.c)}"><div class="t"><b>${esc(r.c)}</b><span>best ${r.g.style.toFixed(2)}</span></div><canvas class="d" data-c="${esc(r.c)}"></canvas><div class="ax">${KS.map(k => `<span>${k}</span>`).join("")}</div></div>`).join("")}</div>
     ${shows.length ? `<h3>What the best sets sound like</h3>
-    <div class="find">${shows.map(f => { const s = pick(f); return `<div class="fc"><div class="h"><b>${esc(f.concept)}</b><span class="lbl">${f.k} neurons · ${f.style.toFixed(2)}</span></div>
+    <div class="find">${shows.map(f => { const s = pick(f); return `<div class="fc" style="--c:${colOf(f.concept)}"><div class="h"><b>${esc(f.concept)}</b><span class="lbl">${f.k} neurons · ${f.style.toFixed(2)}</span></div>
       <div class="q">${esc(s.q)}</div><div class="o">${md(s.out)}</div></div>`; }).join("")}</div>
     <p class="note" style="margin-top:20px">The highest-scoring answer per set, so these are picked. Every answer is in <code>results/v3/</code>.</p>` : ""}`;
 
@@ -452,13 +645,15 @@ barChart($("#compare"), [...D.compare].sort((x, y) => y.v2 - x.v2).map(r => ({ l
     "Best single neuron", "Best set of k neurons");
 
   const top = Math.max(0.3, ...shown.map(r => Math.max(r.s, r.g.style)));
-  live(() => $$(".kcard canvas", el).forEach(cv => {
+  let P = 0;
+  const drawK = () => $$(".kcard canvas", el).forEach(cv => {
     const c = cv.dataset.c, curves = D.v3_screen.filter(v => v.concept === c);
     const X = (i, w) => 3 + i * (w - 6) / (KS.length - 1), Y = (v, h) => h - 2 - v / top * (h - 6);
     const area = pool => (ctx, w, h) => {
       const cv_ = curves.find(v => v.pool === pool); if (!cv_) return;
       const ys = bestAt(cv_.points), g = ctx.createLinearGradient(0, 0, 0, h);
-      g.addColorStop(0, "rgb(120,120,120)"); g.addColorStop(1, "rgb(245,245,245)");
+      ctx.beginPath(); ctx.rect(0, 0, w * P, h); ctx.clip();
+      g.addColorStop(0, grey(0.55)); g.addColorStop(1, grey(0.04));
       ctx.beginPath(); ctx.moveTo(X(0, w), h);
       ys.forEach((v, i) => ctx.lineTo(X(i, w), Y(v, h))); ctx.lineTo(X(KS.length - 1, w), h); ctx.closePath();
       ctx.fillStyle = g; ctx.fill();
@@ -467,13 +662,31 @@ barChart($("#compare"), [...D.compare].sort((x, y) => y.v2 - x.v2).map(r => ({ l
     };
     dither(cv, [
       { color: GREY, draw: area("early") },
-      { color: INK, draw: (ctx, w, h) => { const y = Math.round(Y(single[c] || 0, h)); for (let x = 0; x < w; x += 4) ctx.fillRect(x, y, 2, 1); } },
-      { color: ACC, draw: area("all") }], 2);
-  }));
+      { color: "#efece4", draw: (ctx, w, h) => { const y = Math.round(Y(single[c] || 0, h)); for (let x = 0; x < w; x += 4) ctx.fillRect(x, y, 2, 1); } },
+      { color: colOf(c), draw: area("all") }], 2);
+  });
+  live(drawK);
+  const kg = $(".kgrid", el); if (kg) onEnter(kg, () => tween(1500, p => { P = p; drawK(); }));
 })();
 
-/* ---------- footer mark ---------- */
-live(() => { const cv = $("#footmark"); if (cv) dither(cv, [{ color: INK, draw: ramp(1, 0, 1) }], 2); });
+/* ---------- band of persona colours ---------- */
+(function band() {
+  const cv = $("#band"), cols = Object.values(COL);
+  let t = 0, vis = false;
+  new IntersectionObserver(e => { vis = e[0].isIntersecting; }).observe(cv);
+  const draw = () => dither(cv, cols.map((c, j) => ({ color: c, draw(ctx, w, h) {
+    const seg = w / cols.length, x0 = (j * seg + t * 30) % w;
+    for (const xx of [x0, x0 - w]) { const g = ctx.createLinearGradient(xx, 0, xx + seg * 1.6, 0);
+      g.addColorStop(0, grey(0)); g.addColorStop(0.5, grey(0.9)); g.addColorStop(1, grey(0));
+      ctx.fillStyle = g; ctx.fillRect(xx, 0, seg * 1.6, h); }
+  } })), 3);
+  live(draw);
+  if (!REDUCE) { let last = 0; const f = now => { requestAnimationFrame(f); if (vis && now - last > 80) { last = now; t += 0.2; draw(); } }; requestAnimationFrame(f); }
+})();
+
+/* ---------- scroll reveals ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.08 });
+$$(".reveal").forEach(el => io.observe(el));
 </script>
 </body>
 </html>
