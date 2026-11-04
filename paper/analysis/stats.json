@@ -1,0 +1,2017 @@
+{
+ "baseline": {
+  "n": 8,
+  "fluent": 0.9375,
+  "on_topic": 0.9375,
+  "max_concept": 0.0,
+  "concept": {
+   "pirate": 0.0,
+   "shakespeare": 0.0,
+   "rhyme": 0.0,
+   "cats": 0.0,
+   "conspiracy": 0.0,
+   "anxious": 0.0,
+   "sarcastic": 0.0,
+   "child": 0.0,
+   "food": 0.0,
+   "sleepy": 0.0,
+   "cowboy": 0.0,
+   "melancholy": 0.0,
+   "yoda": 0.0,
+   "hype": 0.0,
+   "noir": 0.0,
+   "poetic": 0.0
+  }
+ },
+ "n_finals_configs": 100,
+ "n_finals_items": 1600,
+ "n_baseline_judged_all_runs": null,
+ "heads": [
+  {
+   "label": "Poet",
+   "concept": "poetic",
+   "L": 4,
+   "n": 7662,
+   "doses": [
+    {
+     "dose": 0.75,
+     "mult": 0.75,
+     "searched_for": "poetic",
+     "style": 0.5974999999999999,
+     "concept": 0.7562500000000001,
+     "fluent": 0.7875000000000001,
+     "on_topic": 0.45,
+     "hit": 1.0,
+     "n": 16
+    },
+    {
+     "dose": 1.0,
+     "mult": 1.0,
+     "searched_for": "poetic",
+     "style": 0.559375,
+     "concept": 0.76875,
+     "fluent": 0.725,
+     "on_topic": 0.19375,
+     "hit": 1.0,
+     "n": 16
+    },
+    {
+     "dose": 1.5,
+     "mult": 1.5,
+     "searched_for": "poetic",
+     "style": 0.219375,
+     "concept": 0.58125,
+     "fluent": 0.36875,
+     "on_topic": 0.037500000000000006,
+     "hit": 0.875,
+     "n": 16
+    }
+   ],
+   "best": 0,
+   "style": 0.5974999999999999,
+   "ci": [
+    0.5193593750000001,
+    0.665
+   ],
+   "concept_score": 0.7562500000000001,
+   "hit": 1.0,
+   "fluent": 0.7875000000000001,
+   "on_topic": 0.45,
+   "prereg_style": 0.559375,
+   "style_seen": 0.63125,
+   "style_heldout": 0.56375,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0125,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.00625,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.00625,
+    "cowboy": 0.0,
+    "melancholy": 0.24375000000000002,
+    "yoda": 0.0,
+    "hype": 0.0,
+    "noir": 0.0125,
+    "poetic": 0.7562500000000001
+   },
+   "runner_up": [
+    0.24375000000000002,
+    "melancholy"
+   ],
+   "searched_for": "poetic"
+  },
+  {
+   "label": "Poet (late)",
+   "concept": "poetic",
+   "L": 17,
+   "n": 7426,
+   "doses": [
+    {
+     "dose": 0.75,
+     "mult": 0.75,
+     "searched_for": "poetic",
+     "style": 0.6031250000000001,
+     "concept": 0.7625000000000001,
+     "fluent": 0.7937500000000001,
+     "on_topic": 0.4375,
+     "hit": 1.0,
+     "n": 16
+    },
+    {
+     "dose": 1.0,
+     "mult": 1.0,
+     "searched_for": "poetic",
+     "style": 0.61,
+     "concept": 0.8250000000000001,
+     "fluent": 0.7375,
+     "on_topic": 0.25,
+     "hit": 1.0,
+     "n": 16
+    },
+    {
+     "dose": 1.5,
+     "mult": 1.5,
+     "searched_for": "poetic",
+     "style": 0.396875,
+     "concept": 0.7250000000000001,
+     "fluent": 0.53125,
+     "on_topic": 0.125,
+     "hit": 1.0,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.61,
+   "ci": [
+    0.5650000000000001,
+    0.6556249999999999
+   ],
+   "concept_score": 0.8250000000000001,
+   "hit": 1.0,
+   "fluent": 0.7375,
+   "on_topic": 0.25,
+   "prereg_style": 0.61,
+   "style_seen": 0.6100000000000001,
+   "style_heldout": 0.61,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.025,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.0125,
+    "cowboy": 0.0,
+    "melancholy": 0.31875,
+    "yoda": 0.0,
+    "hype": 0.0,
+    "noir": 0.0,
+    "poetic": 0.8250000000000001
+   },
+   "runner_up": [
+    0.31875,
+    "melancholy"
+   ],
+   "searched_for": "poetic"
+  },
+  {
+   "label": "Sleepy",
+   "concept": "sleepy",
+   "L": 7,
+   "n": 6626,
+   "doses": [
+    {
+     "dose": -0.75,
+     "mult": 0.75,
+     "searched_for": "sleepy",
+     "style": 0.44875,
+     "concept": 0.5499999999999999,
+     "fluent": 0.8125,
+     "on_topic": 0.14375,
+     "hit": 0.6875,
+     "n": 16
+    },
+    {
+     "dose": -1.0,
+     "mult": 1.0,
+     "searched_for": "sleepy",
+     "style": 0.53375,
+     "concept": 0.675,
+     "fluent": 0.7749999999999999,
+     "on_topic": 0.1375,
+     "hit": 0.8125,
+     "n": 16
+    },
+    {
+     "dose": -1.5,
+     "mult": 1.5,
+     "searched_for": "sleepy",
+     "style": 0.43124999999999997,
+     "concept": 0.625,
+     "fluent": 0.6874999999999999,
+     "on_topic": 0.125,
+     "hit": 0.875,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.53375,
+   "ci": [
+    0.40875000000000006,
+    0.645
+   ],
+   "concept_score": 0.675,
+   "hit": 0.8125,
+   "fluent": 0.7749999999999999,
+   "on_topic": 0.1375,
+   "prereg_style": 0.53375,
+   "style_seen": 0.45500000000000007,
+   "style_heldout": 0.6125,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.675,
+    "cowboy": 0.0,
+    "melancholy": 0.0125,
+    "yoda": 0.0,
+    "hype": 0.0,
+    "noir": 0.0,
+    "poetic": 0.0875
+   },
+   "runner_up": [
+    0.0875,
+    "poetic"
+   ],
+   "searched_for": "sleepy"
+  },
+  {
+   "label": "Food",
+   "concept": "food",
+   "L": 12,
+   "n": 4783,
+   "doses": [
+    {
+     "dose": -0.375,
+     "mult": 0.75,
+     "searched_for": "food",
+     "style": 0.340625,
+     "concept": 0.40625,
+     "fluent": 0.89375,
+     "on_topic": 0.73125,
+     "hit": 0.5,
+     "n": 16
+    },
+    {
+     "dose": -0.5,
+     "mult": 1.0,
+     "searched_for": "food",
+     "style": 0.4725,
+     "concept": 0.60625,
+     "fluent": 0.78125,
+     "on_topic": 0.48750000000000004,
+     "hit": 0.6875,
+     "n": 16
+    },
+    {
+     "dose": -0.75,
+     "mult": 1.5,
+     "searched_for": "food",
+     "style": 0.45625,
+     "concept": 0.6937500000000001,
+     "fluent": 0.65625,
+     "on_topic": 0.26250000000000007,
+     "hit": 0.8125,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.4725,
+   "ci": [
+    0.34875,
+    0.581875
+   ],
+   "concept_score": 0.60625,
+   "hit": 0.6875,
+   "fluent": 0.78125,
+   "on_topic": 0.48750000000000004,
+   "prereg_style": 0.4725,
+   "style_seen": 0.51125,
+   "style_heldout": 0.43375,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.60625,
+    "sleepy": 0.0,
+    "cowboy": 0.0,
+    "melancholy": 0.0,
+    "yoda": 0.0,
+    "hype": 0.00625,
+    "noir": 0.0,
+    "poetic": 0.03125
+   },
+   "runner_up": [
+    0.03125,
+    "poetic"
+   ],
+   "searched_for": "food"
+  },
+  {
+   "label": "Condolence",
+   "concept": "melancholy",
+   "L": 5,
+   "n": 7331,
+   "doses": [
+    {
+     "dose": -0.75,
+     "mult": 0.75,
+     "searched_for": "melancholy",
+     "style": 0.429375,
+     "concept": 0.525,
+     "fluent": 0.8187500000000001,
+     "on_topic": 0.0,
+     "hit": 0.6875,
+     "n": 16
+    },
+    {
+     "dose": -1.0,
+     "mult": 1.0,
+     "searched_for": "melancholy",
+     "style": 0.256875,
+     "concept": 0.38749999999999996,
+     "fluent": 0.5875,
+     "on_topic": 0.00625,
+     "hit": 0.4375,
+     "n": 16
+    },
+    {
+     "dose": -1.5,
+     "mult": 1.5,
+     "searched_for": "melancholy",
+     "style": 0.15000000000000002,
+     "concept": 0.41874999999999996,
+     "fluent": 0.25,
+     "on_topic": 0.0,
+     "hit": 0.5625,
+     "n": 16
+    }
+   ],
+   "best": 0,
+   "style": 0.429375,
+   "ci": [
+    0.36750000000000005,
+    0.495
+   ],
+   "concept_score": 0.525,
+   "hit": 0.6875,
+   "fluent": 0.8187500000000001,
+   "on_topic": 0.0,
+   "prereg_style": 0.256875,
+   "style_seen": 0.39,
+   "style_heldout": 0.46875,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.04375,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.0,
+    "cowboy": 0.0,
+    "melancholy": 0.525,
+    "yoda": 0.0,
+    "hype": 0.0,
+    "noir": 0.0,
+    "poetic": 0.04375
+   },
+   "runner_up": [
+    0.04375,
+    "poetic"
+   ],
+   "searched_for": "melancholy"
+  },
+  {
+   "label": "Shakespeare",
+   "concept": "shakespeare",
+   "L": 2,
+   "n": 2712,
+   "doses": [
+    {
+     "dose": 0.562,
+     "mult": 0.75,
+     "searched_for": "shakespeare",
+     "style": 0.3,
+     "concept": 0.35624999999999996,
+     "fluent": 0.8875,
+     "on_topic": 0.84375,
+     "hit": 0.5,
+     "n": 16
+    },
+    {
+     "dose": 0.75,
+     "mult": 1.0,
+     "searched_for": "shakespeare",
+     "style": 0.4075,
+     "concept": 0.63125,
+     "fluent": 0.6125,
+     "on_topic": 0.575,
+     "hit": 0.875,
+     "n": 16
+    },
+    {
+     "dose": 1.125,
+     "mult": 1.5,
+     "searched_for": "shakespeare",
+     "style": 0.0,
+     "concept": 0.0,
+     "fluent": 0.0,
+     "on_topic": 0.0,
+     "hit": 0.0,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.4075,
+   "ci": [
+    0.31625000000000003,
+    0.48624999999999996
+   ],
+   "concept_score": 0.63125,
+   "hit": 0.875,
+   "fluent": 0.6125,
+   "on_topic": 0.575,
+   "prereg_style": 0.4075,
+   "style_seen": 0.4525,
+   "style_heldout": 0.3625,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.63125,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.0,
+    "cowboy": 0.0,
+    "melancholy": 0.0,
+    "yoda": 0.00625,
+    "hype": 0.0,
+    "noir": 0.0,
+    "poetic": 0.125
+   },
+   "runner_up": [
+    0.125,
+    "poetic"
+   ],
+   "searched_for": "shakespeare"
+  },
+  {
+   "label": "Child",
+   "concept": "child",
+   "L": 6,
+   "n": 3117,
+   "doses": [
+    {
+     "dose": -0.75,
+     "mult": 0.75,
+     "searched_for": "child",
+     "style": 0.283125,
+     "concept": 0.33125,
+     "fluent": 0.84375,
+     "on_topic": 0.6625000000000001,
+     "hit": 0.125,
+     "n": 16
+    },
+    {
+     "dose": -1.0,
+     "mult": 1.0,
+     "searched_for": "child",
+     "style": 0.3425,
+     "concept": 0.44375,
+     "fluent": 0.7875000000000001,
+     "on_topic": 0.5125,
+     "hit": 0.375,
+     "n": 16
+    },
+    {
+     "dose": -1.5,
+     "mult": 1.5,
+     "searched_for": "child",
+     "style": 0.31437499999999996,
+     "concept": 0.63125,
+     "fluent": 0.49375,
+     "on_topic": 0.26875000000000004,
+     "hit": 0.875,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.3425,
+   "ci": [
+    0.291875,
+    0.391875
+   ],
+   "concept_score": 0.44375,
+   "hit": 0.375,
+   "fluent": 0.7875000000000001,
+   "on_topic": 0.5125,
+   "prereg_style": 0.3425,
+   "style_seen": 0.36,
+   "style_heldout": 0.32499999999999996,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.03125,
+    "sarcastic": 0.0,
+    "child": 0.44375,
+    "food": 0.018750000000000003,
+    "sleepy": 0.0125,
+    "cowboy": 0.0,
+    "melancholy": 0.00625,
+    "yoda": 0.0,
+    "hype": 0.037500000000000006,
+    "noir": 0.0,
+    "poetic": 0.0125
+   },
+   "runner_up": [
+    0.037500000000000006,
+    "hype"
+   ],
+   "searched_for": "child"
+  },
+  {
+   "label": "Cats",
+   "concept": "cats",
+   "L": 2,
+   "n": 7763,
+   "doses": [
+    {
+     "dose": 0.375,
+     "mult": 0.75,
+     "searched_for": "cats",
+     "style": 0.125,
+     "concept": 0.15625,
+     "fluent": 0.9187500000000001,
+     "on_topic": 0.7875,
+     "hit": 0.1875,
+     "n": 16
+    },
+    {
+     "dose": 0.5,
+     "mult": 1.0,
+     "searched_for": "cats",
+     "style": 0.335625,
+     "concept": 0.5750000000000001,
+     "fluent": 0.6375,
+     "on_topic": 0.38125,
+     "hit": 0.75,
+     "n": 16
+    },
+    {
+     "dose": 0.75,
+     "mult": 1.5,
+     "searched_for": "cats",
+     "style": 0.09812499999999999,
+     "concept": 0.35,
+     "fluent": 0.21875,
+     "on_topic": 0.09375,
+     "hit": 0.4375,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.335625,
+   "ci": [
+    0.18625000000000003,
+    0.48
+   ],
+   "concept_score": 0.5750000000000001,
+   "hit": 0.75,
+   "fluent": 0.6375,
+   "on_topic": 0.38125,
+   "prereg_style": 0.335625,
+   "style_seen": 0.26625,
+   "style_heldout": 0.405,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.5750000000000001,
+    "conspiracy": 0.0,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0125,
+    "sleepy": 0.0,
+    "cowboy": 0.0,
+    "melancholy": 0.0,
+    "yoda": 0.0,
+    "hype": 0.0,
+    "noir": 0.0,
+    "poetic": 0.0
+   },
+   "runner_up": [
+    0.0125,
+    "food"
+   ],
+   "searched_for": "cats"
+  },
+  {
+   "label": "Rhyme",
+   "concept": "rhyme",
+   "L": 3,
+   "n": 3557,
+   "doses": [
+    {
+     "dose": -0.75,
+     "mult": 0.75,
+     "searched_for": "shakespeare",
+     "style": 0.0975,
+     "concept": 0.13125,
+     "fluent": 0.8062500000000001,
+     "on_topic": 0.51875,
+     "hit": 0.125,
+     "n": 16
+    },
+    {
+     "dose": -1.0,
+     "mult": 1.0,
+     "searched_for": "shakespeare",
+     "style": 0.31625,
+     "concept": 0.49375,
+     "fluent": 0.64375,
+     "on_topic": 0.23750000000000002,
+     "hit": 0.625,
+     "n": 16
+    },
+    {
+     "dose": -1.5,
+     "mult": 1.5,
+     "searched_for": "shakespeare",
+     "style": 0.001875,
+     "concept": 0.018750000000000003,
+     "fluent": 0.043750000000000004,
+     "on_topic": 0.025,
+     "hit": 0.0,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.31625,
+   "ci": [
+    0.235625,
+    0.396875
+   ],
+   "concept_score": 0.49375,
+   "hit": 0.625,
+   "fluent": 0.64375,
+   "on_topic": 0.23750000000000002,
+   "prereg_style": 0.31625,
+   "style_seen": 0.2775,
+   "style_heldout": 0.355,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.21875,
+    "rhyme": 0.49375,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.0125,
+    "cowboy": 0.0,
+    "melancholy": 0.03125,
+    "yoda": 0.0,
+    "hype": 0.0125,
+    "noir": 0.0,
+    "poetic": 0.56875
+   },
+   "runner_up": [
+    0.56875,
+    "poetic"
+   ],
+   "searched_for": "shakespeare"
+  },
+  {
+   "label": "Conspiracy",
+   "concept": "conspiracy",
+   "L": 9,
+   "n": 4058,
+   "doses": [
+    {
+     "dose": -1.5,
+     "mult": 0.75,
+     "searched_for": "conspiracy",
+     "style": 0.274375,
+     "concept": 0.54375,
+     "fluent": 0.48124999999999996,
+     "on_topic": 0.15625,
+     "hit": 0.6875,
+     "n": 16
+    },
+    {
+     "dose": -2.0,
+     "mult": 1.0,
+     "searched_for": "conspiracy",
+     "style": 0.3225,
+     "concept": 0.70625,
+     "fluent": 0.45625000000000004,
+     "on_topic": 0.05,
+     "hit": 1.0,
+     "n": 16
+    },
+    {
+     "dose": -3.0,
+     "mult": 1.5,
+     "searched_for": "conspiracy",
+     "style": 0.06625,
+     "concept": 0.69375,
+     "fluent": 0.09375,
+     "on_topic": 0.0,
+     "hit": 0.9375,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.3225,
+   "ci": [
+    0.291875,
+    0.34625
+   ],
+   "concept_score": 0.70625,
+   "hit": 1.0,
+   "fluent": 0.45625000000000004,
+   "on_topic": 0.05,
+   "prereg_style": 0.3225,
+   "style_seen": 0.305,
+   "style_heldout": 0.33999999999999997,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.70625,
+    "anxious": 0.1125,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.00625,
+    "cowboy": 0.0,
+    "melancholy": 0.0,
+    "yoda": 0.0,
+    "hype": 0.018750000000000003,
+    "noir": 0.0,
+    "poetic": 0.0
+   },
+   "runner_up": [
+    0.1125,
+    "anxious"
+   ],
+   "searched_for": "conspiracy"
+  },
+  {
+   "label": "Hype",
+   "concept": "hype",
+   "L": 22,
+   "n": 2500,
+   "doses": [
+    {
+     "dose": -0.375,
+     "mult": 0.75,
+     "searched_for": "hype",
+     "style": 0.304375,
+     "concept": 0.375,
+     "fluent": 0.825,
+     "on_topic": 0.83125,
+     "hit": 0.4375,
+     "n": 16
+    },
+    {
+     "dose": -0.5,
+     "mult": 1.0,
+     "searched_for": "hype",
+     "style": 0.29562499999999997,
+     "concept": 0.51875,
+     "fluent": 0.5687500000000001,
+     "on_topic": 0.59375,
+     "hit": 0.6875,
+     "n": 16
+    },
+    {
+     "dose": -0.75,
+     "mult": 1.5,
+     "searched_for": "hype",
+     "style": 0.017499999999999998,
+     "concept": 0.13125,
+     "fluent": 0.05625000000000001,
+     "on_topic": 0.06875,
+     "hit": 0.0625,
+     "n": 16
+    }
+   ],
+   "best": 0,
+   "style": 0.304375,
+   "ci": [
+    0.22625,
+    0.3937656249999998
+   ],
+   "concept_score": 0.375,
+   "hit": 0.4375,
+   "fluent": 0.825,
+   "on_topic": 0.83125,
+   "prereg_style": 0.29562499999999997,
+   "style_seen": 0.31,
+   "style_heldout": 0.29875,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.01875,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.0,
+    "cowboy": 0.0,
+    "melancholy": 0.0,
+    "yoda": 0.0,
+    "hype": 0.375,
+    "noir": 0.0,
+    "poetic": 0.0
+   },
+   "runner_up": [
+    0.01875,
+    "anxious"
+   ],
+   "searched_for": "hype"
+  },
+  {
+   "label": "Noir",
+   "concept": "noir",
+   "L": 5,
+   "n": 4817,
+   "doses": [
+    {
+     "dose": 0.75,
+     "mult": 0.75,
+     "searched_for": "melancholy",
+     "style": 0.27625,
+     "concept": 0.33125,
+     "fluent": 0.8375,
+     "on_topic": 0.1125,
+     "hit": 0.3125,
+     "n": 16
+    },
+    {
+     "dose": 1.0,
+     "mult": 1.0,
+     "searched_for": "melancholy",
+     "style": 0.224375,
+     "concept": 0.31875,
+     "fluent": 0.7312500000000001,
+     "on_topic": 0.0125,
+     "hit": 0.25,
+     "n": 16
+    },
+    {
+     "dose": 1.5,
+     "mult": 1.5,
+     "searched_for": "melancholy",
+     "style": 0.054375,
+     "concept": 0.15000000000000002,
+     "fluent": 0.3625,
+     "on_topic": 0.0,
+     "hit": 0.0,
+     "n": 16
+    }
+   ],
+   "best": 0,
+   "style": 0.27625,
+   "ci": [
+    0.185625,
+    0.36625
+   ],
+   "concept_score": 0.33125,
+   "hit": 0.3125,
+   "fluent": 0.8375,
+   "on_topic": 0.1125,
+   "prereg_style": 0.224375,
+   "style_seen": 0.23125,
+   "style_heldout": 0.32125000000000004,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0,
+    "conspiracy": 0.0,
+    "anxious": 0.0,
+    "sarcastic": 0.0,
+    "child": 0.0,
+    "food": 0.00625,
+    "sleepy": 0.0,
+    "cowboy": 0.0,
+    "melancholy": 0.47500000000000003,
+    "yoda": 0.0,
+    "hype": 0.0,
+    "noir": 0.33125,
+    "poetic": 0.48124999999999996
+   },
+   "runner_up": [
+    0.48124999999999996,
+    "poetic"
+   ],
+   "searched_for": "melancholy"
+  },
+  {
+   "label": "Sarcastic",
+   "concept": "sarcastic",
+   "L": 5,
+   "n": 8857,
+   "doses": [
+    {
+     "dose": -0.75,
+     "mult": 0.75,
+     "searched_for": "sarcastic",
+     "style": 0.135,
+     "concept": 0.15624999999999997,
+     "fluent": 0.8875,
+     "on_topic": 0.7562500000000001,
+     "hit": 0.0625,
+     "n": 16
+    },
+    {
+     "dose": -1.0,
+     "mult": 1.0,
+     "searched_for": "sarcastic",
+     "style": 0.25312500000000004,
+     "concept": 0.34375,
+     "fluent": 0.73125,
+     "on_topic": 0.43750000000000006,
+     "hit": 0.25,
+     "n": 16
+    },
+    {
+     "dose": -1.5,
+     "mult": 1.5,
+     "searched_for": "sarcastic",
+     "style": 0.15187499999999998,
+     "concept": 0.25625,
+     "fluent": 0.51875,
+     "on_topic": 0.1875,
+     "hit": 0.25,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.25312500000000004,
+   "ci": [
+    0.164359375,
+    0.35375
+   ],
+   "concept_score": 0.34375,
+   "hit": 0.25,
+   "fluent": 0.73125,
+   "on_topic": 0.43750000000000006,
+   "prereg_style": 0.25312500000000004,
+   "style_seen": 0.27749999999999997,
+   "style_heldout": 0.22875,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.0375,
+    "conspiracy": 0.0,
+    "anxious": 0.05625,
+    "sarcastic": 0.34375,
+    "child": 0.0,
+    "food": 0.0,
+    "sleepy": 0.0125,
+    "cowboy": 0.0,
+    "melancholy": 0.0,
+    "yoda": 0.0,
+    "hype": 0.0,
+    "noir": 0.0,
+    "poetic": 0.00625
+   },
+   "runner_up": [
+    0.05625,
+    "anxious"
+   ],
+   "searched_for": "sarcastic"
+  },
+  {
+   "label": "Anxious",
+   "concept": "anxious",
+   "L": 5,
+   "n": 6227,
+   "doses": [
+    {
+     "dose": -0.75,
+     "mult": 0.75,
+     "searched_for": "anxious",
+     "style": 0.20500000000000002,
+     "concept": 0.44375,
+     "fluent": 0.46875,
+     "on_topic": 0.20625,
+     "hit": 0.5,
+     "n": 16
+    },
+    {
+     "dose": -1.0,
+     "mult": 1.0,
+     "searched_for": "anxious",
+     "style": 0.2375,
+     "concept": 0.6625,
+     "fluent": 0.35624999999999996,
+     "on_topic": 0.07500000000000001,
+     "hit": 0.9375,
+     "n": 16
+    },
+    {
+     "dose": -1.5,
+     "mult": 1.5,
+     "searched_for": "anxious",
+     "style": 0.11875,
+     "concept": 0.54375,
+     "fluent": 0.20625,
+     "on_topic": 0.03125,
+     "hit": 0.625,
+     "n": 16
+    }
+   ],
+   "best": 1,
+   "style": 0.2375,
+   "ci": [
+    0.18937500000000002,
+    0.280625
+   ],
+   "concept_score": 0.6625,
+   "hit": 0.9375,
+   "fluent": 0.35624999999999996,
+   "on_topic": 0.07500000000000001,
+   "prereg_style": 0.2375,
+   "style_seen": 0.25625,
+   "style_heldout": 0.21875,
+   "profile": {
+    "pirate": 0.0,
+    "shakespeare": 0.0,
+    "rhyme": 0.0,
+    "cats": 0.00625,
+    "conspiracy": 0.0,
+    "anxious": 0.6625,
+    "sarcastic": 0.00625,
+    "child": 0.05,
+    "food": 0.0,
+    "sleepy": 0.00625,
+    "cowboy": 0.0,
+    "melancholy": 0.037500000000000006,
+    "yoda": 0.0,
+    "hype": 0.15000000000000002,
+    "noir": 0.0,
+    "poetic": 0.0
+   },
+   "runner_up": [
+    0.15000000000000002,
+    "hype"
+   ],
+   "searched_for": "anxious"
+  }
+ ],
+ "heldout_summary": {
+  "mean_seen": 0.3809821428571428,
+  "mean_heldout": 0.3959821428571429,
+  "wilcoxon_p": 0.637600945128121,
+  "n_heldout_above_0.2": 14
+ },
+ "prereg_summary": {
+  "mean_best": 0.38848214285714283,
+  "mean_prereg": 0.3691071428571429
+ },
+ "selectivity": {
+  "median_ratio": 6.194444444444445,
+  "n_target_is_top": 12
+ },
+ "dose_response": {
+  "style": [
+   0.3157142857142857,
+   0.3691071428571429,
+   0.17691964285714287
+  ],
+  "concept": [
+   0.41607142857142854,
+   0.5683035714285714,
+   0.41562499999999997
+  ],
+  "fluent": [
+   0.7901785714285714,
+   0.6522321428571427,
+   0.32053571428571426
+  ],
+  "on_topic": [
+   0.4741071428571429,
+   0.28214285714285714,
+   0.08750000000000001
+  ]
+ },
+ "best_single": {
+  "pirate": 0.0,
+  "shakespeare": 0.4075,
+  "rhyme": 0.31625,
+  "cats": 0.335625,
+  "conspiracy": 0.3225,
+  "anxious": 0.2375,
+  "sarcastic": 0.25312500000000004,
+  "child": 0.3425,
+  "food": 0.53125,
+  "sleepy": 0.53375,
+  "cowboy": 0.0,
+  "melancholy": 0.429375,
+  "yoda": 0.009375000000000001,
+  "hype": 0.304375,
+  "noir": 0.27625,
+  "poetic": 0.61
+ },
+ "pairs": {
+  "n": 11,
+  "n_better_by_0.05": 0,
+  "mean_delta": -0.2269886363636364
+ },
+ "n_screen_configs": 965,
+ "n_screen_items": 3860,
+ "n_screen_candidates": 320,
+ "median_resid_norm": {
+  "0": 2.4721882343292236,
+  "1": 3.165853977203369,
+  "2": 3.2495546340942383,
+  "3": 4.6128950119018555,
+  "4": 5.35453462600708,
+  "5": 6.209000110626221,
+  "6": 7.018252849578857,
+  "7": 7.443432807922363,
+  "8": 7.893524169921875,
+  "9": 8.180368423461914,
+  "10": 8.932758331298828,
+  "11": 8.953760147094727,
+  "12": 9.07629108428955,
+  "13": 9.450523376464844,
+  "14": 10.092609405517578,
+  "15": 10.38538932800293,
+  "16": 10.786212921142578,
+  "17": 11.648550033569336,
+  "18": 13.779361724853516,
+  "19": 16.38095474243164,
+  "20": 18.48166275024414,
+  "21": 20.676692962646484,
+  "22": 24.08904266357422,
+  "23": 26.271808624267578,
+  "24": 29.11104965209961,
+  "25": 31.20110511779785,
+  "26": 34.43026351928711,
+  "27": 36.580833435058594,
+  "28": 41.551536560058594,
+  "29": 46.17996597290039,
+  "30": 51.088260650634766,
+  "31": 53.670372009277344
+ },
+ "screen": {
+  "n_candidates": 320,
+  "hit_threshold": 0.2,
+  "hits": 19,
+  "hit_rate": 0.059375,
+  "spearman_attr_style": [
+   0.17153739592208356,
+   0.002074162349648248
+  ],
+  "hit_rate_early": 0.040268456375838924,
+  "hit_rate_late": 0.3181818181818182,
+  "n_early": 298,
+  "n_late": 22,
+  "off_target_hits": 14,
+  "hits_by_concept": {
+   "pirate": 0,
+   "shakespeare": 0,
+   "rhyme": 1,
+   "cats": 0,
+   "conspiracy": 4,
+   "anxious": 1,
+   "sarcastic": 0,
+   "child": 3,
+   "food": 3,
+   "sleepy": 1,
+   "cowboy": 0,
+   "melancholy": 1,
+   "yoda": 0,
+   "hype": 2,
+   "noir": 0,
+   "poetic": 3
+  },
+  "winners_old_rank": {
+   "L3 N3557": null,
+   "L5 N8857": 783,
+   "L9 N4058": null,
+   "L6 N3117": 46,
+   "L12 N4783": null,
+   "L7 N6626": 1906,
+   "L5 N7331": null,
+   "L5 N4817": null,
+   "L4 N7662": 1163,
+   "L2 N2712": null,
+   "L22 N2500": null,
+   "L17 N7426": null
+  },
+  "n_generic": 60
+ },
+ "controls_v2": [
+  {
+   "neuron": "L2 N2712 +0.75",
+   "top": "shakespeare",
+   "style": 0.31
+  },
+  {
+   "neuron": "L5 N6227 -1.00",
+   "top": "anxious",
+   "style": 0.3275
+  },
+  {
+   "neuron": "L10 N2092 +1.00",
+   "top": "poetic",
+   "style": 0.375
+  },
+  {
+   "neuron": "L2 N7763 +0.50",
+   "top": "cats",
+   "style": 0.295
+  },
+  {
+   "neuron": "L6 N3117 -1.00",
+   "top": "child",
+   "style": 0.36
+  }
+ ],
+ "winners_curse": {
+  "n": 20,
+  "screen_mean": 0.28212500000000007,
+  "finals_mean": 0.27431250000000007,
+  "spearman": 0.6721804511278194
+ },
+ "v1_vs_v2": {
+  "pirate": [
+   0,
+   0.0
+  ],
+  "shakespeare": [
+   0.33375,
+   0.4075
+  ],
+  "rhyme": [
+   0.00625,
+   0.31625
+  ],
+  "cats": [
+   0.28875,
+   0.335625
+  ],
+  "conspiracy": [
+   0.021875,
+   0.3225
+  ],
+  "anxious": [
+   0.20750000000000002,
+   0.2375
+  ],
+  "sarcastic": [
+   0.017499999999999998,
+   0.25312500000000004
+  ],
+  "child": [
+   0.22749999999999998,
+   0.3425
+  ],
+  "food": [
+   0.08124999999999999,
+   0.53125
+  ],
+  "sleepy": [
+   0.0325,
+   0.53375
+  ],
+  "cowboy": [
+   0.08937500000000001,
+   0.0
+  ],
+  "melancholy": [
+   0.22312500000000002,
+   0.429375
+  ],
+  "yoda": [
+   null,
+   0.009375000000000001
+  ],
+  "hype": [
+   null,
+   0.304375
+  ],
+  "noir": [
+   null,
+   0.27625
+  ],
+  "poetic": [
+   null,
+   0.61
+  ]
+ },
+ "v1": {
+  "n_screen": 576,
+  "n_finals": 108,
+  "runtime_s": 3762.535491704941,
+  "n_concepts": 12
+ },
+ "sets": {
+  "n_screen": 480,
+  "n_finals": 22,
+  "screen_curves": {
+   "pirate": {
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0,
+    "32": 0.0
+   },
+   "shakespeare": {
+    "2": 0.034999999999999996,
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0,
+    "32": 0.0
+   },
+   "rhyme": {
+    "2": 0.0,
+    "4": 0.015,
+    "8": 0.0,
+    "16": 0.0275,
+    "32": 0.0
+   },
+   "cats": {
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0,
+    "32": 0.0
+   },
+   "conspiracy": {
+    "2": 0.057499999999999996,
+    "4": 0.33749999999999997,
+    "8": 0.42,
+    "16": 0.03,
+    "32": 0.14
+   },
+   "anxious": {
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0275,
+    "16": 0.055,
+    "32": 0.135
+   },
+   "sarcastic": {
+    "2": 0.09499999999999999,
+    "4": 0.0175,
+    "8": 0.0,
+    "16": 0.015,
+    "32": 0.0375
+   },
+   "child": {
+    "2": 0.27499999999999997,
+    "4": 0.21,
+    "8": 0.01,
+    "16": 0.10750000000000001,
+    "32": 0.0425
+   },
+   "food": {
+    "2": 0.48750000000000004,
+    "4": 0.4275,
+    "8": 0.0925,
+    "16": 0.185,
+    "32": 0.07500000000000001
+   },
+   "sleepy": {
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0025,
+    "16": 0.0625,
+    "32": 0.0175
+   },
+   "cowboy": {
+    "2": 0.11,
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0,
+    "32": 0.0375
+   },
+   "melancholy": {
+    "2": 0.455,
+    "4": 0.425,
+    "8": 0.5225,
+    "16": 0.52,
+    "32": 0.49250000000000005
+   },
+   "yoda": {
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0075,
+    "16": 0.0025,
+    "32": 0.0025
+   },
+   "hype": {
+    "2": 0.1225,
+    "4": 0.08,
+    "8": 0.2425,
+    "16": 0.13999999999999999,
+    "32": 0.07
+   },
+   "noir": {
+    "2": 0.07,
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0075,
+    "32": 0.03
+   },
+   "poetic": {
+    "2": 0.26999999999999996,
+    "4": 0.3075,
+    "8": 0.5499999999999999,
+    "16": 0.5625,
+    "32": 0.435
+   }
+  },
+  "finals_best": {
+   "conspiracy": [
+    4,
+    0.2525
+   ],
+   "anxious": [
+    32,
+    0.2
+   ],
+   "sarcastic": [
+    2,
+    0.030625000000000003
+   ],
+   "child": [
+    2,
+    0.23812499999999998
+   ],
+   "food": [
+    2,
+    0.414375
+   ],
+   "sleepy": [
+    16,
+    0.09625
+   ],
+   "cowboy": [
+    2,
+    0.07250000000000001
+   ],
+   "melancholy": [
+    4,
+    0.46875000000000006
+   ],
+   "hype": [
+    8,
+    0.186875
+   ],
+   "noir": [
+    2,
+    0.07125000000000001
+   ],
+   "poetic": [
+    8,
+    0.5718749999999999
+   ]
+  }
+ },
+ "runtime_s": {
+  "v1": 3762.535491704941,
+  "v2_screen": 2349.0858945846558,
+  "v2_finals": 1372.5118036270142,
+  "v3_screen": 1501.2110121250153,
+  "v3_finals": 410.3311583995819,
+  "v4_controls": 4001.2165689468384
+ },
+ "random_control": {
+  "n_configs": 960,
+  "n_own": 320,
+  "own_hits_attr": 19,
+  "own_hits_rand": 0,
+  "own_fisher_p": 2.897012638307454e-06,
+  "own_mean_attr": 0.0405390625,
+  "own_mean_rand": 0.0006328125,
+  "n_any_attr": 261,
+  "n_any_rand": 261,
+  "any_hits_attr": 31,
+  "any_hits_rand": 0,
+  "any_fisher_p": 3.613746718185149e-10,
+  "max_any_rand": 0.1425,
+  "rand_hits": [],
+  "fluent_attr": 0.5035416666666667,
+  "fluent_rand": 0.624921875,
+  "on_topic_attr": 0.4009895833333334,
+  "on_topic_rand": 0.5459635416666667,
+  "fluent_wilcoxon_p": 8.000392615766393e-39
+ },
+ "baseline120": {
+  "n": 16,
+  "fluent": 1.0,
+  "on_topic": 0.975,
+  "max_concept": 0.0
+ },
+ "baselines": {
+  "prompted": {
+   "pirate": {
+    "style": 0.820625,
+    "fluent": 0.875,
+    "on_topic": 0.775
+   },
+   "shakespeare": {
+    "style": 0.7731250000000001,
+    "fluent": 0.88125,
+    "on_topic": 0.79375
+   },
+   "rhyme": {
+    "style": 0.56375,
+    "fluent": 0.7937500000000001,
+    "on_topic": 0.775
+   },
+   "cats": {
+    "style": 0.765625,
+    "fluent": 0.8812500000000001,
+    "on_topic": 0.5437500000000001
+   },
+   "conspiracy": {
+    "style": 0.826875,
+    "fluent": 0.89375,
+    "on_topic": 0.54375
+   },
+   "anxious": {
+    "style": 0.8331250000000001,
+    "fluent": 0.89375,
+    "on_topic": 0.6062500000000001
+   },
+   "sarcastic": {
+    "style": 0.7550000000000001,
+    "fluent": 0.88125,
+    "on_topic": 0.59375
+   },
+   "child": {
+    "style": 0.609375,
+    "fluent": 0.8,
+    "on_topic": 0.6375
+   },
+   "food": {
+    "style": 0.798125,
+    "fluent": 0.86875,
+    "on_topic": 0.61875
+   },
+   "sleepy": {
+    "style": 0.70625,
+    "fluent": 0.7625000000000001,
+    "on_topic": 0.625
+   },
+   "cowboy": {
+    "style": 0.7887500000000001,
+    "fluent": 0.8875000000000001,
+    "on_topic": 0.7125
+   },
+   "melancholy": {
+    "style": 0.7818750000000001,
+    "fluent": 0.9125000000000001,
+    "on_topic": 0.54375
+   },
+   "yoda": {
+    "style": 0.43937499999999996,
+    "fluent": 0.6625,
+    "on_topic": 0.73125
+   },
+   "hype": {
+    "style": 0.815625,
+    "fluent": 0.8250000000000001,
+    "on_topic": 0.5625
+   },
+   "noir": {
+    "style": 0.810625,
+    "fluent": 0.9,
+    "on_topic": 0.48125
+   },
+   "poetic": {
+    "style": 0.810625,
+    "fluent": 0.90625,
+    "on_topic": 0.65625
+   }
+  },
+  "dense_best": {
+   "pirate": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.24875,
+    "fluent": 0.69375,
+    "on_topic": 0.6375
+   },
+   "shakespeare": {
+    "layer": 12,
+    "dose": 0.5,
+    "style": 0.5725,
+    "fluent": 0.7437499999999999,
+    "on_topic": 0.6625000000000001
+   },
+   "rhyme": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.31375,
+    "fluent": 0.7375,
+    "on_topic": 0.675
+   },
+   "cats": {
+    "layer": 8,
+    "dose": 1.0,
+    "style": 0.239375,
+    "fluent": 0.29375,
+    "on_topic": 0.06875
+   },
+   "conspiracy": {
+    "layer": 12,
+    "dose": 1.0,
+    "style": 0.09999999999999999,
+    "fluent": 0.30625,
+    "on_topic": 0.1
+   },
+   "anxious": {
+    "layer": 8,
+    "dose": 1.0,
+    "style": 0.2875,
+    "fluent": 0.33125000000000004,
+    "on_topic": 0.1
+   },
+   "sarcastic": {
+    "layer": 12,
+    "dose": 0.5,
+    "style": 0.14250000000000002,
+    "fluent": 0.7437499999999999,
+    "on_topic": 0.6625000000000001
+   },
+   "child": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.36624999999999996,
+    "fluent": 0.775,
+    "on_topic": 0.7062499999999999
+   },
+   "food": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.115625,
+    "fluent": 0.8187500000000001,
+    "on_topic": 0.73125
+   },
+   "sleepy": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.06,
+    "fluent": 0.6812499999999999,
+    "on_topic": 0.51875
+   },
+   "cowboy": {
+    "layer": 12,
+    "dose": 0.5,
+    "style": 0.15125,
+    "fluent": 0.7625,
+    "on_topic": 0.6875
+   },
+   "melancholy": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.325625,
+    "fluent": 0.8250000000000001,
+    "on_topic": 0.53125
+   },
+   "yoda": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.045,
+    "fluent": 0.75625,
+    "on_topic": 0.79375
+   },
+   "hype": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.4756250000000001,
+    "fluent": 0.5375,
+    "on_topic": 0.54375
+   },
+   "noir": {
+    "layer": 8,
+    "dose": 0.5,
+    "style": 0.11375,
+    "fluent": 0.8375000000000001,
+    "on_topic": 0.68125
+   },
+   "poetic": {
+    "layer": 12,
+    "dose": 0.5,
+    "style": 0.684375,
+    "fluent": 0.86875,
+    "on_topic": 0.59375
+   }
+  },
+  "neuron_best": {
+   "pirate": {
+    "style": 0.0,
+    "fluent": 0.8875,
+    "on_topic": 0.84375
+   },
+   "shakespeare": {
+    "style": 0.4075,
+    "fluent": 0.6125,
+    "on_topic": 0.575
+   },
+   "rhyme": {
+    "style": 0.31625,
+    "fluent": 0.64375,
+    "on_topic": 0.23750000000000002
+   },
+   "cats": {
+    "style": 0.335625,
+    "fluent": 0.6375,
+    "on_topic": 0.38125
+   },
+   "conspiracy": {
+    "style": 0.3225,
+    "fluent": 0.45625000000000004,
+    "on_topic": 0.05
+   },
+   "anxious": {
+    "style": 0.2375,
+    "fluent": 0.35624999999999996,
+    "on_topic": 0.07500000000000001
+   },
+   "sarcastic": {
+    "style": 0.25312500000000004,
+    "fluent": 0.73125,
+    "on_topic": 0.43750000000000006
+   },
+   "child": {
+    "style": 0.3425,
+    "fluent": 0.7875000000000001,
+    "on_topic": 0.5125
+   },
+   "food": {
+    "style": 0.53125,
+    "fluent": 0.69375,
+    "on_topic": 0.1875
+   },
+   "sleepy": {
+    "style": 0.53375,
+    "fluent": 0.7749999999999999,
+    "on_topic": 0.1375
+   },
+   "cowboy": {
+    "style": 0.0,
+    "fluent": 0.8875,
+    "on_topic": 0.84375
+   },
+   "melancholy": {
+    "style": 0.429375,
+    "fluent": 0.8187500000000001,
+    "on_topic": 0.0
+   },
+   "yoda": {
+    "style": 0.009375000000000001,
+    "fluent": 0.6125,
+    "on_topic": 0.30625
+   },
+   "hype": {
+    "style": 0.304375,
+    "fluent": 0.825,
+    "on_topic": 0.83125
+   },
+   "noir": {
+    "style": 0.27625,
+    "fluent": 0.8375,
+    "on_topic": 0.1125
+   },
+   "poetic": {
+    "style": 0.61,
+    "fluent": 0.7375,
+    "on_topic": 0.25
+   }
+  },
+  "dense_by_layer_dose": {
+   "L4 d0.5": 0.1182421875,
+   "L4 d1.0": 0.0059375,
+   "L4 d2.0": 0.0002734375,
+   "L8 d0.5": 0.22117187500000002,
+   "L8 d1.0": 0.061406249999999996,
+   "L8 d2.0": 0.0176171875,
+   "L12 d0.5": 0.20328125,
+   "L12 d1.0": 0.0765625,
+   "L12 d2.0": 0.008906250000000001
+  },
+  "mean_prompted": {
+   "style": 0.743671875,
+   "fluent": 0.8515625,
+   "on_topic": 0.6375
+  },
+  "mean_dense_best": {
+   "style": 0.2651171875,
+   "fluent": 0.66953125,
+   "on_topic": 0.5433593749999999
+  },
+  "mean_neuron_best": {
+   "style": 0.3068359375,
+   "fluent": 0.70625,
+   "on_topic": 0.361328125
+  },
+  "n_dense_beats_neuron": 5,
+  "n_neuron_beats_dense": 7
+ },
+ "counts": [
+  {
+   "run": "1",
+   "file": "v1/screen-judge.json",
+   "judge": "sonnet",
+   "sections": {
+    "screen": 2304,
+    "baseline": 8
+   },
+   "n": 2312,
+   "auto": 0,
+   "unscored": 0
+  },
+  {
+   "run": "1",
+   "file": "v1/judge.json",
+   "judge": "sonnet",
+   "sections": {
+    "finals": 1728,
+    "wildcards": 160,
+    "baseline": 8
+   },
+   "n": 1896,
+   "auto": 0,
+   "unscored": 0
+  },
+  {
+   "run": "2",
+   "file": "v2/screen-judge.json",
+   "judge": "haiku",
+   "sections": {
+    "screen": 3860,
+    "baseline": 8
+   },
+   "n": 3868,
+   "auto": 536,
+   "unscored": 0
+  },
+  {
+   "run": "2",
+   "file": "v2/finals-judge.json",
+   "judge": "sonnet",
+   "sections": {
+    "finals": 1600,
+    "baseline": 8
+   },
+   "n": 1608,
+   "auto": 127,
+   "unscored": 0
+  },
+  {
+   "run": "3",
+   "file": "v3/screen-judge.json",
+   "judge": "sonnet",
+   "sections": {
+    "screen": 1940,
+    "baseline": 8
+   },
+   "n": 1948,
+   "auto": 0,
+   "unscored": 0
+  },
+  {
+   "run": "3",
+   "file": "v3/finals-judge.json",
+   "judge": "sonnet",
+   "sections": {
+    "finals": 352,
+    "baseline": 8
+   },
+   "n": 360,
+   "auto": 0,
+   "unscored": 0
+  },
+  {
+   "run": "4",
+   "file": "v4/random-judge.json",
+   "judge": "haiku",
+   "sections": {
+    "random": 3840
+   },
+   "n": 3840,
+   "auto": 408,
+   "unscored": 0
+  },
+  {
+   "run": "4",
+   "file": "v4/finals-judge.json",
+   "judge": "sonnet",
+   "sections": {
+    "dense": 2304,
+    "prompted": 256,
+    "baseline120": 16
+   },
+   "n": 2576,
+   "auto": 598,
+   "unscored": 0
+  }
+ ],
+ "n_judged_total": 18408,
+ "n_auto_total": 1669,
+ "lexical": {
+  "n_baseline_texts": 40,
+  "rows": {
+   "Shakespeare": {
+    "baseline": 0.0,
+    "own": 5.809731299927378,
+    "max_other": 1.098901098901099
+   },
+   "Cats": {
+    "baseline": 0.0,
+    "own": 5.564263322884012,
+    "max_other": 0.21382751247327156
+   },
+   "Food": {
+    "baseline": 0.0,
+    "own": 3.2740213523131674,
+    "max_other": 0.30902348578491967
+   },
+   "Condolence": {
+    "baseline": 0.0,
+    "own": 12.634408602150538,
+    "max_other": 3.215434083601286
+   },
+   "Sleepy": {
+    "baseline": 0.0,
+    "own": 4.2299349240780915,
+    "max_other": 0.18315018315018314
+   },
+   "Hype": {
+    "baseline": 0.5089058524173028,
+    "own": 18.875838926174495,
+    "max_other": 0.12254901960784313
+   },
+   "Conspiracy": {
+    "baseline": 0.2544529262086514,
+    "own": 4.044117647058823,
+    "max_other": 1.881720430107527
+   },
+   "Noir": {
+    "baseline": 0.2544529262086514,
+    "own": 1.5451174289245984,
+    "max_other": 1.0165184243964422
+   },
+   "Anxious": {
+    "baseline": 0.2544529262086514,
+    "own": 5.037513397642015,
+    "max_other": 4.301075268817204
+   }
+  },
+  "n_own_highest": 9
+ }
+}
