@@ -3,3 +3,8 @@ __pycache__/
 .DS_Store
 *.tmp
 .env*
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.blg
+paper/arxiv-source.tar.gz

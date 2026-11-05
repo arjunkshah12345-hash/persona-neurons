@@ -1,0 +1,251 @@
+\begin{thebibliography}{35}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bau et~al.(2019)Bau, Belinkov, Sajjad, Durrani, Dalvi, and
+  Glass]{bau2019identifying}
+Anthony Bau, Yonatan Belinkov, Hassan Sajjad, Nadir Durrani, Fahim Dalvi, and
+  James Glass.
+\newblock Identifying and controlling important neurons in neural machine
+  translation.
+\newblock In \emph{International Conference on Learning Representations}, 2019.
+
+\bibitem[Bau et~al.(2020)Bau, Zhu, Strobelt, Lapedriza, Zhou, and
+  Torralba]{bau2020units}
+David Bau, Jun-Yan Zhu, Hendrik Strobelt, Agata Lapedriza, Bolei Zhou, and
+  Antonio Torralba.
+\newblock Understanding the role of individual units in a deep neural network.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 117\penalty0
+  (48):\penalty0 30071--30078, 2020.
+
+\bibitem[Bricken et~al.(2023)Bricken, Templeton, Batson, Chen, Jermyn, Conerly,
+  Turner, Anil, Denison, Askell, et~al.]{bricken2023monosemanticity}
+Trenton Bricken, Adly Templeton, Joshua Batson, Brian Chen, Adam Jermyn, Tom
+  Conerly, Nick Turner, Cem Anil, Carson Denison, Amanda Askell, et~al.
+\newblock Towards monosemanticity: Decomposing language models with dictionary
+  learning.
+\newblock \emph{Transformer Circuits Thread}, 2023.
+
+\bibitem[Chen et~al.(2025)Chen, Arditi, Sleight, Evans, and
+  Lindsey]{chen2025persona}
+Runjin Chen, Andy Arditi, Henry Sleight, Owain Evans, and Jack Lindsey.
+\newblock Persona vectors: Monitoring and controlling character traits in
+  language models.
+\newblock \emph{arXiv preprint arXiv:2507.21509}, 2025.
+
+\bibitem[Cunningham et~al.(2023)Cunningham, Ewart, Riggs, Huben, and
+  Sharkey]{cunningham2023sparse}
+Hoagy Cunningham, Aidan Ewart, Logan Riggs, Robert Huben, and Lee Sharkey.
+\newblock Sparse autoencoders find highly interpretable features in language
+  models.
+\newblock \emph{arXiv preprint arXiv:2309.08600}, 2023.
+
+\bibitem[Dai et~al.(2022)Dai, Dong, Hao, Sui, Chang, and Wei]{dai2022knowledge}
+Damai Dai, Li~Dong, Yaru Hao, Zhifang Sui, Baobao Chang, and Furu Wei.
+\newblock Knowledge neurons in pretrained transformers.
+\newblock In \emph{Proceedings of the 60th Annual Meeting of the Association
+  for Computational Linguistics}, 2022.
+
+\bibitem[Dathathri et~al.(2020)Dathathri, Madotto, Lan, Hung, Frank, Molino,
+  Yosinski, and Liu]{dathathri2020plug}
+Sumanth Dathathri, Andrea Madotto, Janice Lan, Jane Hung, Eric Frank, Piero
+  Molino, Jason Yosinski, and Rosanne Liu.
+\newblock Plug and play language models: A simple approach to controlled text
+  generation.
+\newblock In \emph{International Conference on Learning Representations}, 2020.
+
+\bibitem[Deng et~al.(2025)Deng, Tang, Yin, Yang, Zhao, and Wen]{deng2025npti}
+Jia Deng, Tianyi Tang, Yanbin Yin, Wenhao Yang, Wayne~Xin Zhao, and Ji-Rong
+  Wen.
+\newblock Neuron-based personality trait induction in large language models.
+\newblock In \emph{International Conference on Learning Representations}, 2025.
+
+\bibitem[Elhage et~al.(2022)Elhage, Hume, Olsson, Schiefer, Henighan, Kravec,
+  Hatfield-Dodds, Lasenby, Drain, Chen, et~al.]{elhage2022superposition}
+Nelson Elhage, Tristan Hume, Catherine Olsson, Nicholas Schiefer, Tom Henighan,
+  Shauna Kravec, Zac Hatfield-Dodds, Robert Lasenby, Dawn Drain, Carol Chen,
+  et~al.
+\newblock Toy models of superposition.
+\newblock \emph{arXiv preprint arXiv:2209.10652}, 2022.
+
+\bibitem[Geva et~al.(2021)Geva, Schuster, Berant, and Levy]{geva2021ffn}
+Mor Geva, Roei Schuster, Jonathan Berant, and Omer Levy.
+\newblock Transformer feed-forward layers are key-value memories.
+\newblock In \emph{Proceedings of the 2021 Conference on Empirical Methods in
+  Natural Language Processing}, 2021.
+
+\bibitem[Geva et~al.(2022)Geva, Caciularu, Wang, and
+  Goldberg]{geva2022promoting}
+Mor Geva, Avi Caciularu, Kevin~Ro Wang, and Yoav Goldberg.
+\newblock Transformer feed-forward layers build predictions by promoting
+  concepts in the vocabulary space.
+\newblock In \emph{Proceedings of the 2022 Conference on Empirical Methods in
+  Natural Language Processing}, 2022.
+
+\bibitem[Gurnee et~al.(2023)Gurnee, Nanda, Pauly, Harvey, Troitskii, and
+  Bertsimas]{gurnee2023haystack}
+Wes Gurnee, Neel Nanda, Matthew Pauly, Katherine Harvey, Dmitrii Troitskii, and
+  Dimitris Bertsimas.
+\newblock Finding neurons in a haystack: Case studies with sparse probing.
+\newblock \emph{Transactions on Machine Learning Research}, 2023.
+
+\bibitem[Gurnee et~al.(2024)Gurnee, Horsley, Guo, Kheirkhah, Sun, Hathaway,
+  Nanda, and Bertsimas]{gurnee2024universal}
+Wes Gurnee, Theo Horsley, Zifan~Carl Guo, Tara~Rezaei Kheirkhah, Qinyi Sun,
+  Will Hathaway, Neel Nanda, and Dimitris Bertsimas.
+\newblock Universal neurons in {GPT2} language models.
+\newblock \emph{arXiv preprint arXiv:2401.12181}, 2024.
+
+\bibitem[Harada and Hamada(2026)]{harada2026psych}
+Yuto Harada and Hiro~Taiyo Hamada.
+\newblock Psychological concept neurons: Can neural control bias probing and
+  shift generation in {LLMs}?
+\newblock \emph{arXiv preprint arXiv:2604.11802}, 2026.
+
+\bibitem[Howell(2026)]{howell2026neuron}
+Justin Howell.
+\newblock One neuron, one personality: steering {Qwen3.5} with single {MLP}
+  neurons.
+\newblock Software and write-up,
+  \url{https://github.com/justinrhowell/neuron-steering}, released 29 October
+  2026, 2026.
+
+\bibitem[Kram{\'a}r et~al.(2024)Kram{\'a}r, Lieberum, Shah, and
+  Nanda]{kramar2024atp}
+J{\'a}nos Kram{\'a}r, Tom Lieberum, Rohin Shah, and Neel Nanda.
+\newblock {AtP*}: An efficient and scalable method for localizing {LLM}
+  behaviour to components.
+\newblock \emph{arXiv preprint arXiv:2403.00745}, 2024.
+
+\bibitem[Lai et~al.(2024)Lai, Hangya, and Fraser]{lai2024style}
+Wen Lai, Viktor Hangya, and Alexander Fraser.
+\newblock Style-specific neurons for steering {LLMs} in text style transfer.
+\newblock In \emph{Proceedings of the 2024 Conference on Empirical Methods in
+  Natural Language Processing}, 2024.
+
+\bibitem[Li et~al.(2023)Li, Patel, Vi{\'e}gas, Pfister, and
+  Wattenberg]{li2023inference}
+Kenneth Li, Oam Patel, Fernanda Vi{\'e}gas, Hanspeter Pfister, and Martin
+  Wattenberg.
+\newblock Inference-time intervention: Eliciting truthful answers from a
+  language model.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2023.
+
+\bibitem[Liu(2026)]{liu2026leverage}
+Hongliang Liu.
+\newblock Leverage is not reach: A control-window law for single-neuron
+  steering in language models.
+\newblock \emph{arXiv preprint arXiv:2606.19831}, 2026.
+
+\bibitem[Lu et~al.(2026)Lu, Gallagher, Michala, Fish, and
+  Lindsey]{lu2026assistant}
+Christina Lu, Jack Gallagher, Jonathan Michala, Kyle Fish, and Jack Lindsey.
+\newblock The assistant axis: Situating and stabilizing the default persona of
+  language models.
+\newblock \emph{arXiv preprint arXiv:2601.10387}, 2026.
+
+\bibitem[{Lyra (@\_lyraaaa\_)}(2026)]{lyra2026steer}
+{Lyra (@\_lyraaaa\_)}.
+\newblock Single-neuron steering of {Qwen3.5-4B}.
+\newblock Post on X, 24 October 2026,
+  \url{https://x.com/_lyraaaa_/status/2113833330429083662}, 2026.
+
+\bibitem[Nanda(2023)]{nanda2023attribution}
+Neel Nanda.
+\newblock Attribution patching: Activation patching at industrial scale.
+\newblock
+  \url{https://www.neelnanda.io/mechanistic-interpretability/attribution-patching},
+  2023.
+
+\bibitem[{Qwen Team}(2026)]{qwen35_4b}
+{Qwen Team}.
+\newblock {Qwen3.5-4B} model card.
+\newblock \url{https://huggingface.co/Qwen/Qwen3.5-4B}, 2026.
+
+\bibitem[Radford et~al.(2017)Radford, Jozefowicz, and
+  Sutskever]{radford2017learning}
+Alec Radford, Rafal Jozefowicz, and Ilya Sutskever.
+\newblock Learning to generate reviews and discovering sentiment.
+\newblock \emph{arXiv preprint arXiv:1704.01444}, 2017.
+
+\bibitem[Rimsky et~al.(2024)Rimsky, Gabrieli, Schulz, Tong, Hubinger, and
+  Turner]{rimsky2024steering}
+Nina Rimsky, Nick Gabrieli, Julian Schulz, Meg Tong, Evan Hubinger, and
+  Alexander~Matt Turner.
+\newblock Steering {Llama} 2 via contrastive activation addition.
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association
+  for Computational Linguistics}, 2024.
+
+\bibitem[Shazeer(2020)]{shazeer2020glu}
+Noam Shazeer.
+\newblock {GLU} variants improve transformer.
+\newblock \emph{arXiv preprint arXiv:2002.05202}, 2020.
+
+\bibitem[Subramani et~al.(2022)Subramani, Suresh, and
+  Peters]{subramani2022extracting}
+Nishant Subramani, Nivedita Suresh, and Matthew~E. Peters.
+\newblock Extracting latent steering vectors from pretrained language models.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2022}, 2022.
+
+\bibitem[Syed et~al.(2023)Syed, Rager, and Conmy]{syed2023attribution}
+Aaquib Syed, Can Rager, and Arthur Conmy.
+\newblock Attribution patching outperforms automated circuit discovery.
+\newblock \emph{arXiv preprint arXiv:2310.10348}, 2023.
+
+\bibitem[Tang et~al.(2024)Tang, Luo, Huang, Zhang, Wang, Zhao, Wei, and
+  Wen]{tang2024language}
+Tianyi Tang, Wenyang Luo, Haoyang Huang, Dongdong Zhang, Xiaolei Wang, Xin
+  Zhao, Furu Wei, and Ji-Rong Wen.
+\newblock Language-specific neurons: The key to multilingual capabilities in
+  large language models.
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association
+  for Computational Linguistics}, 2024.
+
+\bibitem[Templeton et~al.(2024)Templeton, Conerly, Marcus, Lindsey, Bricken,
+  Chen, Pearce, Citro, Ameisen, Jones, et~al.]{templeton2024scaling}
+Adly Templeton, Tom Conerly, Jonathan Marcus, Jack Lindsey, Trenton Bricken,
+  Brian Chen, Adam Pearce, Craig Citro, Emmanuel Ameisen, Andy Jones, et~al.
+\newblock Scaling monosemanticity: Extracting interpretable features from
+  {Claude} 3 {Sonnet}.
+\newblock \emph{Transformer Circuits Thread}, 2024.
+
+\bibitem[Turner et~al.(2023)Turner, Thiergart, Leech, Udell, Vazquez, Mini, and
+  MacDiarmid]{turner2023activation}
+Alexander~Matt Turner, Lisa Thiergart, Gavin Leech, David Udell, Juan~J.
+  Vazquez, Ulisse Mini, and Monte MacDiarmid.
+\newblock Steering language models with activation engineering.
+\newblock \emph{arXiv preprint arXiv:2308.10248}, 2023.
+
+\bibitem[Wang et~al.(2022)Wang, Wen, Zhang, Hou, Liu, and Li]{wang2022skill}
+Xiaozhi Wang, Kaiyue Wen, Zhengyan Zhang, Lei Hou, Zhiyuan Liu, and Juanzi Li.
+\newblock Finding skill neurons in pre-trained transformer-based language
+  models.
+\newblock In \emph{Proceedings of the 2022 Conference on Empirical Methods in
+  Natural Language Processing}, 2022.
+
+\bibitem[Wei et~al.(2026)Wei, Li, Wang, and Deng]{wei2026iris}
+Zesheng Wei, Mengxiang Li, Zilei Wang, and Yang Deng.
+\newblock Beyond static personas: Situational personality steering for large
+  language models.
+\newblock \emph{arXiv preprint arXiv:2604.13846}, 2026.
+
+\bibitem[Zheng et~al.(2023)Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li,
+  Li, Xing, Zhang, Gonzalez, and Stoica]{zheng2023judging}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao
+  Zhuang, Zi~Lin, Zhuohan Li, Dacheng Li, Eric~P. Xing, Hao Zhang, Joseph~E.
+  Gonzalez, and Ion Stoica.
+\newblock Judging {LLM}-as-a-judge with {MT-Bench} and {Chatbot Arena}.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2023.
+
+\bibitem[Zou et~al.(2023)Zou, Phan, Chen, Campbell, Guo, Ren, Pan, Yin,
+  Mazeika, Dombrowski, et~al.]{zou2023representation}
+Andy Zou, Long Phan, Sarah Chen, James Campbell, Phillip Guo, Richard Ren,
+  Alexander Pan, Xuwang Yin, Mantas Mazeika, Ann-Kathrin Dombrowski, et~al.
+\newblock Representation engineering: A top-down approach to {AI} transparency.
+\newblock \emph{arXiv preprint arXiv:2310.01405}, 2023.
+
+\end{thebibliography}
